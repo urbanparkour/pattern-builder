@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Pattern Builder - Round 1</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans KR', 'Bubblegum Sans', cursive, sans-serif;
+            background: linear-gradient(135deg, #1A3A5F, #0F2A44);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow: auto;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 25px;
+            padding: 20px 25px;
+            max-width: 1000px;
+            width: 95%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            margin: 20px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            border: 3px solid #FFD700;
+        }
+
+        .stage-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 28px;
+            color: #1A3A5F;
+            margin-bottom: 5px;
+            flex-shrink: 0;
+            text-shadow: 2px 2px 0 #FFD700;
+        }
+
+        .sub-title {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .class-badge {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            background: #f0f0f0;
+            display: inline-block;
+            padding: 4px 20px;
+            border-radius: 50px;
+            margin-top: 3px;
+        }
+
+        .class-badge span {
+            font-weight: bold;
+            color: #1A3A5F;
+        }
+
+        .question-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 18px;
+            color: #4ECDC4;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .word-cloud {
+            background: linear-gradient(135deg, #1A3A5F, #2B4F7C);
+            border-radius: 18px;
+            padding: 30px 20px;
+            min-height: 300px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            border: 2px solid #FFD700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px 16px;
+        }
+
+        /* ===== LEGO BLOCK STYLES ===== */
+        .word-block {
+            font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 10px 18px;
+            color: #1A1A1A;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+            user-select: none;
+            animation: floatIn 0.5s ease-out;
+            animation-fill-mode: both;
+            position: relative;
+            border-radius: 4px;
+            border-bottom: 6px solid rgba(0,0,0,0.25);
+            box-shadow: 
+                inset 0 -4px 0 rgba(0,0,0,0.1),
+                0 4px 8px rgba(0,0,0,0.2);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* LEGO studs on top */
+        .word-block::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 9px;
+            background: inherit;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                0 -2px 0 rgba(0,0,0,0.1);
+            filter: brightness(1.15);
+        }
+
+        .word-block::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 30%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 9px;
+            background: inherit;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                0 -2px 0 rgba(0,0,0,0.1);
+            filter: brightness(1.15);
+            display: none;
+        }
+
+        .word-block.long-word::after {
+            display: block;
+        }
+
+        .word-block:hover {
+            transform: translateY(-6px) scale(1.04);
+            box-shadow: 
+                inset 0 -4px 0 rgba(0,0,0,0.1),
+                0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .word-block:active {
+            transform: scale(0.95) translateY(2px);
+            border-bottom-width: 3px;
+            box-shadow: 
+                inset 0 -2px 0 rgba(0,0,0,0.1),
+                0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: scale(0.7) rotate(-8deg) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+        }
+
+        /* LEGO Colors - brighter, more toy-like */
+        .word-noun { 
+            background: #FF4757; 
+            border-bottom-color: #C0392B;
+        }
+        .word-verb { 
+            background: #2ED573; 
+            border-bottom-color: #1E8449;
+        }
+        .word-pronoun { 
+            background: #FFD93D; 
+            border-bottom-color: #D4A017;
+        }
+        .word-adjective { 
+            background: #1E90FF; 
+            border-bottom-color: #1565C0;
+        }
+        .word-adverb { 
+            background: #A66CFF; 
+            border-bottom-color: #7B2FBE;
+        }
+        .word-preposition { 
+            background: #FF8E53; 
+            border-bottom-color: #D35400;
+        }
+        .word-article { 
+            background: #F9A8D4; 
+            border-bottom-color: #C71585;
+        }
+        .word-conjunction { 
+            background: #00D2D3; 
+            border-bottom-color: #00838F;
+        }
+        .word-interjection { 
+            background: #FD79A8; 
+            border-bottom-color: #C2185B;
+        }
+        .word-other { 
+            background: #B0BEC5; 
+            border-bottom-color: #78909C;
+        }
+
+        .hint-text {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            font-style: italic;
+        }
+
+        .answer-section {
+            background: #f8f9fa;
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+            flex-shrink: 0;
+            border: 2px solid #4ECDC4;
+        }
+
+        .answer-label {
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
+            color: #4ECDC4;
+            margin-bottom: 8px;
+        }
+
+        .answer-text {
+            font-size: 24px;
+            color: #1A3A5F;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #4ECDC4;
+            word-wrap: break-word;
+            font-weight: bold;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            padding: 12px;
+            background: linear-gradient(145deg, #FFD700, #FDB931);
+            border-radius: 18px;
+            color: #1A3A5F;
+            font-weight: bold;
+            flex-wrap: wrap;
+            gap: 30px;
+            flex-shrink: 0;
+        }
+
+        .team-stat {
+            font-size: 18px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .team-stat span { font-size: 24px; margin-right: 8px; }
+        .team-stat input {
+            width: 60px;
+            padding: 5px;
+            font-size: 16px;
+            text-align: center;
+            font-family: 'Fredoka One', cursive;
+            border: 2px solid #1A3A5F;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding: 12px 0 5px 0;
+            background: white;
+            border-top: 2px solid #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        .control-btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 18px;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            transition: all 0.1s ease;
+            min-width: 120px;
+        }
+
+        .control-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+        .btn-show { background: #4ECDC4; box-shadow: 0 4px 0 #2A8F87; }
+        .btn-next { background: #FFD700; color: #333; box-shadow: 0 4px 0 #C4A000; }
+        .btn-home { background: #95a5a6; box-shadow: 0 4px 0 #6C7A7D; }
+
+        .hidden { display: none !important; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 35px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: modalPop 0.5s ease-out;
+            border: 5px solid #FFD700;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 60px; margin-bottom: 15px; }
+        .modal-content h2 { font-family: 'Fredoka One', cursive; font-size: 34px; color: #1A3A5F; margin-bottom: 15px; }
+        .modal-content p { font-size: 20px; margin-bottom: 25px; color: #333; }
+
+        .modal-btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
+            padding: 10px 35px;
+            background: linear-gradient(145deg, #1A3A5F, #0F2A44);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 #0A1A2F;
+        }
+
+        .modal-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0A1A2F; }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .stage-title { font-size: 22px; }
+            .word-block { 
+                font-size: 16px; 
+                padding: 8px 12px; 
+                min-width: 40px;
+                border-bottom-width: 5px;
+            }
+            .word-block::before {
+                width: 14px;
+                height: 7px;
+                top: -6px;
+            }
+            .word-block::after {
+                width: 14px;
+                height: 7px;
+                top: -6px;
+            }
+            .word-cloud { gap: 10px 12px; padding: 20px 10px; min-height: 200px; }
+            .answer-text { font-size: 18px; }
+            .control-btn { font-size: 14px; padding: 8px 16px; min-width: 100px; }
+            .team-stat { font-size: 14px; }
+            .team-stat span { font-size: 20px; }
+            .team-stat input { width: 50px; font-size: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .word-block { 
+                font-size: 14px; 
+                padding: 6px 10px; 
+                min-width: 35px;
+                border-bottom-width: 4px;
+            }
+            .word-block::before {
+                width: 12px;
+                height: 6px;
+                top: -5px;
+            }
+            .word-block::after {
+                width: 12px;
+                height: 6px;
+                top: -5px;
+            }
+            .word-cloud { gap: 8px 10px; padding: 15px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="question-container">
+    <h1 class="stage-title">🧩 PATTERN BUILDER</h1>
+    <div class="sub-title">🇰🇷 Korean Words → English Sentences</div>
+    <div class="class-badge" id="classDisplay">Class: <span>2:00 PM Class (A1)</span></div>
+
+    <div class="question-number" id="questionNumber"></div>
+
+    <div class="hint-text">💡 Arrange the Korean word blocks to form the English sentence!</div>
+
+    <!-- WORD CLOUD - LEGO blocks with Korean words -->
+    <div class="word-cloud" id="wordCloud"></div>
+
+    <div class="team-stats" id="teamStats">
+        <div class="team-stat"><span>🔴 Team A</span> <input type="number" id="scoreA" value="0" min="0" step="1"></div>
+        <div class="team-stat"><span>🔵 Team B</span> <input type="number" id="scoreB" value="0" min="0" step="1"></div>
+    </div>
+
+    <div class="answer-section" id="answerSection">
+        <div class="answer-label">✓ CORRECT ENGLISH SENTENCE</div>
+        <div class="answer-text" id="answerText"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn btn-show" id="showAnswerBtn">Show Answer</button>
+        <button class="control-btn btn-next hidden" id="nextBtn">Next ➤</button>
+        <button class="control-btn btn-home" onclick="location.href='index.html'">Home</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="timesUpModal">
+    <div class="modal-content">
+        <div class="modal-icon">⏰</div>
+        <h2>TIME'S UP!</h2>
+        <p>The team battle has ended</p>
+        <button class="modal-btn" id="modalOkBtn">OK</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="completeModal">
+    <div class="modal-content">
+        <div class="modal-icon">🏆</div>
+        <h2>BATTLE COMPLETE!</h2>
+        <p>Great job, teams!</p>
+        <button class="modal-btn" id="completeOkBtn">OK</button>
+    </div>
+</div>
+
+<script>
+// 10 Sample questions: Korean words → English sentences
+// Each Korean sentence is split into individual words with spaces
+const SAMPLE_QUESTIONS = [
+    { 
+        scrambled: "저는 학교에 갑니다", 
+        correct: "I go to school" 
+    },
+    { 
+        scrambled: "그녀는 책을 읽습니다", 
+        correct: "She reads a book" 
+    },
+    { 
+        scrambled: "우리는 축구를 합니다", 
+        correct: "We play soccer" 
+    },
+    { 
+        scrambled: "그는 피자를 좋아합니다", 
+        correct: "He likes pizza" 
+    },
+    { 
+        scrambled: "고양이가 잠을 잡니다", 
+        correct: "The cat sleeps" 
+    },
+    { 
+        scrambled: "나는 사과를 먹습니다", 
+        correct: "I eat an apple" 
+    },
+    { 
+        scrambled: "그녀는 노래를 부릅니다", 
+        correct: "She sings a song" 
+    },
+    { 
+        scrambled: "우리는 영화를 봅니다", 
+        correct: "We watch a movie" 
+    },
+    { 
+        scrambled: "그는 물을 마십니다", 
+        correct: "He drinks water" 
+    },
+    { 
+        scrambled: "아이들이 놀고 있습니다", 
+        correct: "The children are playing" 
+    }
+];
+
+// Part of speech mapper for Korean words
+function getWordClass(word) {
+    const w = word.trim();
+    if (!w) return 'word-other';
+
+    // Korean pronouns
+    const pronouns = ['저는','나는','그녀는','그는','우리는','내가','우리','그들','그녀','그','나','너'];
+    if (pronouns.some(p => w === p)) return 'word-pronoun';
+
+    // Korean particles (markers)
+    const particles = ['은','는','이','가','을','를','에','에게','으로','에서','까지','부터','와','과'];
+    if (particles.some(p => w === p || w.endsWith(p))) {
+        // Check if it's just a particle or part of a word
+        if (w.length <= 2 && particles.some(p => w === p)) return 'word-preposition';
+    }
+
+    // Korean prepositions/particles
+    const preps = ['에','에게','으로','에서','까지','부터','와','과'];
+    if (preps.some(p => w === p)) return 'word-preposition';
+
+    // Korean conjunctions
+    const conj = ['그리고','하지만','그래서','또는','때문에','만약','언제','동안'];
+    if (conj.some(c => w === c)) return 'word-conjunction';
+
+    // Korean adverbs
+    const adverbs = ['매우','정말','아주','거의','항상','자주','가끔','벌써','아직','또한','잘','빨리','천천히','조심히','갑자기','드디어','이제','오늘','내일','어제','여기','저기'];
+    if (adverbs.some(a => w === a)) return 'word-adverb';
+
+    // Korean adjectives
+    const adjectives = ['좋은','나쁜','새로운','오래된','큰','작은','긴','짧은','높은','낮은','아름다운','멋진','친절한','똑똑한','재미있는','행복한','슬픈','화난','피곤한','배고픈','무서운','용감한','게으른','바쁜','쉬운','어려운','딱딱한','부드러운','따뜻한','시원한','더운','추운','젖은','마른','깨끗한','더러운','빠른','느린','이른','늦은','맞는','틀린'];
+    if (adjectives.some(a => w === a || w.endsWith(a))) return 'word-adjective';
+
+    // Korean verbs (basic forms and conjugated forms)
+    const verbs = ['갑니다','읽습니다','합니다','좋아합니다','먹습니다','잡니다','부릅니다','봅니다','마십니다','놀고','있습니다','됩니다','옵니다','삽니다','만듭니다','압니다','말합니다','듣습니다','씁니다','일합니다','운동합니다','공부합니다','노래합니다','춤춥니다','요리합니다','청소합니다','씻습니다','입습니다','신습니다','벗습니다','가다','읽다','하다','좋아하다','먹다','자다','부르다','보다','마시다','놀다','있다','되다','오다','살다','만들다','알다','말하다','듣다','쓰다','일하다','운동하다','공부하다','노래하다','춤추다','요리하다','청소하다','씻다','입다','신다','벗다'];
+    if (verbs.some(v => w === v || w.endsWith(v) || v.endsWith(w))) return 'word-verb';
+
+    // If nothing matched -> noun
+    return 'word-noun';
+}
+
+// Shuffle array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// Render word cloud with LEGO blocks
+function renderWordCloud(sentence) {
+    // Split by spaces to get individual Korean words
+    const words = sentence.split(/\s+/).filter(w => w.length > 0);
+    const container = $('#wordCloud');
+    container.empty();
+    
+    // Randomize order for scatter effect
+    const shuffledWords = shuffleArray([...words]);
+    
+    shuffledWords.forEach((word, index) => {
+        const cls = getWordClass(word);
+        const block = $('<span class="word-block"></span>')
+            .addClass(cls)
+            .text(word)
+            .css('animation-delay', (index * 0.06) + 's');
+        
+        // Add long-word class for words with 3+ characters (gives them 2 studs)
+        if (word.length >= 3) {
+            block.addClass('long-word');
+        }
+        
+        container.append(block);
+    });
+}
+
+// Game logic
+let questions = [];
+let currentIndex = 0;
+let timerTimeout;
+
+$(document).ready(function () {
+    questions = shuffleArray([...SAMPLE_QUESTIONS]);
+    console.log('Questions loaded. Total:', questions.length);
+    showQuestion();
+});
+
+function showQuestion() {
+    if (currentIndex >= questions.length) {
+        clearTimeout(timerTimeout);
+        showCompleteModal();
+        return;
+    }
+
+    const q = questions[currentIndex];
+    $('#questionNumber').text(`Question ${currentIndex + 1} of ${questions.length}`);
+    renderWordCloud(q.scrambled);
+    $('#answerText').text(q.correct);
+
+    $('#answerSection').hide();
+    $('#showAnswerBtn').removeClass('hidden');
+    $('#nextBtn').addClass('hidden');
+}
+
+function showTimesUpModal() {
+    clearTimeout(timerTimeout);
+    $('#timesUpModal').fadeIn(300).css('display', 'flex');
+}
+
+function showCompleteModal() {
+    $('#completeModal').fadeIn(300).css('display', 'flex');
+}
+
+$('#showAnswerBtn').on('click', function () {
+    $('#answerSection').slideDown(200);
+    $(this).addClass('hidden');
+    $('#nextBtn').removeClass('hidden');
+});
+
+$('#nextBtn').on('click', function () {
+    currentIndex++;
+    showQuestion();
+});
+
+$('#modalOkBtn, #completeOkBtn').on('click', function() {
+    location.href = 'index.html';
+});
+
+window.addEventListener('beforeunload', function() {
+    clearTimeout(timerTimeout);
+});
+</script>
+
+</body>
+</html>
