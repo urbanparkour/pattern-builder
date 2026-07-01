@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -15,7 +15,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Bubblegum Sans', cursive;
+            font-family: 'Noto Sans KR', 'Bubblegum Sans', cursive, sans-serif;
             background: linear-gradient(135deg, #1A3A5F, #0F2A44);
             min-height: 100vh;
             display: flex;
@@ -48,6 +48,14 @@
             margin-bottom: 5px;
             flex-shrink: 0;
             text-shadow: 2px 2px 0 #FFD700;
+        }
+
+        .sub-title {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            flex-shrink: 0;
         }
 
         .class-badge {
@@ -87,54 +95,142 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 15px 20px;
+            gap: 12px 16px;
         }
 
+        /* ===== LEGO BLOCK STYLES ===== */
         .word-block {
-            font-family: 'Fredoka One', cursive;
-            font-size: 24px;
-            font-weight: bold;
-            padding: 12px 20px;
-            border-radius: 16px;
+            font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 10px 18px;
             color: #1A1A1A;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
             display: inline-block;
             letter-spacing: 0.5px;
             text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             cursor: pointer;
-            border: 2px solid rgba(255,255,255,0.3);
             user-select: none;
             animation: floatIn 0.5s ease-out;
             animation-fill-mode: both;
+            position: relative;
+            border-radius: 4px;
+            border-bottom: 6px solid rgba(0,0,0,0.25);
+            box-shadow: 
+                inset 0 -4px 0 rgba(0,0,0,0.1),
+                0 4px 8px rgba(0,0,0,0.2);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* LEGO studs on top */
+        .word-block::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 9px;
+            background: inherit;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                0 -2px 0 rgba(0,0,0,0.1);
+            filter: brightness(1.15);
+        }
+
+        .word-block::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 30%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 9px;
+            background: inherit;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                0 -2px 0 rgba(0,0,0,0.1);
+            filter: brightness(1.15);
+            display: none;
+        }
+
+        .word-block.long-word::after {
+            display: block;
         }
 
         .word-block:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+            transform: translateY(-6px) scale(1.04);
+            box-shadow: 
+                inset 0 -4px 0 rgba(0,0,0,0.1),
+                0 8px 16px rgba(0,0,0,0.3);
         }
 
         .word-block:active {
-            transform: scale(0.95);
-            box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+            transform: scale(0.95) translateY(2px);
+            border-bottom-width: 3px;
+            box-shadow: 
+                inset 0 -2px 0 rgba(0,0,0,0.1),
+                0 2px 4px rgba(0,0,0,0.2);
         }
 
         @keyframes floatIn {
-            0% { opacity: 0; transform: scale(0.8) rotate(-5deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            0% { opacity: 0; transform: scale(0.7) rotate(-8deg) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
         }
 
-        /* Color families */
-        .word-noun { background: #FF6B6B; }        /* Red */
-        .word-verb { background: #4ECDC4; }         /* Teal */
-        .word-pronoun { background: #FFD93D; }      /* Yellow */
-        .word-adjective { background: #6BCB77; }    /* Green */
-        .word-adverb { background: #A66CFF; }       /* Purple */
-        .word-preposition { background: #FF8E53; }  /* Orange */
-        .word-article { background: #F9A8D4; }      /* Pink */
-        .word-conjunction { background: #74B9FF; }  /* Light Blue */
-        .word-interjection { background: #FD79A8; } /* Rose */
-        .word-other { background: #B0BEC5; }        /* Grey */
+        /* LEGO Colors - brighter, more toy-like */
+        .word-noun { 
+            background: #FF4757; 
+            border-bottom-color: #C0392B;
+        }
+        .word-verb { 
+            background: #2ED573; 
+            border-bottom-color: #1E8449;
+        }
+        .word-pronoun { 
+            background: #FFD93D; 
+            border-bottom-color: #D4A017;
+        }
+        .word-adjective { 
+            background: #1E90FF; 
+            border-bottom-color: #1565C0;
+        }
+        .word-adverb { 
+            background: #A66CFF; 
+            border-bottom-color: #7B2FBE;
+        }
+        .word-preposition { 
+            background: #FF8E53; 
+            border-bottom-color: #D35400;
+        }
+        .word-article { 
+            background: #F9A8D4; 
+            border-bottom-color: #C71585;
+        }
+        .word-conjunction { 
+            background: #00D2D3; 
+            border-bottom-color: #00838F;
+        }
+        .word-interjection { 
+            background: #FD79A8; 
+            border-bottom-color: #C2185B;
+        }
+        .word-other { 
+            background: #B0BEC5; 
+            border-bottom-color: #78909C;
+        }
+
+        .hint-text {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            font-style: italic;
+        }
 
         .answer-section {
             background: #f8f9fa;
@@ -162,6 +258,7 @@
             border: 2px solid #4ECDC4;
             word-wrap: break-word;
             font-weight: bold;
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
         .team-stats {
@@ -279,8 +376,23 @@
         @media (max-width: 768px) {
             body { padding: 10px; }
             .stage-title { font-size: 22px; }
-            .word-block { font-size: 18px; padding: 8px 14px; }
-            .word-cloud { gap: 10px 14px; padding: 20px 10px; min-height: 200px; }
+            .word-block { 
+                font-size: 16px; 
+                padding: 8px 12px; 
+                min-width: 40px;
+                border-bottom-width: 5px;
+            }
+            .word-block::before {
+                width: 14px;
+                height: 7px;
+                top: -6px;
+            }
+            .word-block::after {
+                width: 14px;
+                height: 7px;
+                top: -6px;
+            }
+            .word-cloud { gap: 10px 12px; padding: 20px 10px; min-height: 200px; }
             .answer-text { font-size: 18px; }
             .control-btn { font-size: 14px; padding: 8px 16px; min-width: 100px; }
             .team-stat { font-size: 14px; }
@@ -289,7 +401,22 @@
         }
 
         @media (max-width: 480px) {
-            .word-block { font-size: 16px; padding: 6px 12px; border-radius: 12px; }
+            .word-block { 
+                font-size: 14px; 
+                padding: 6px 10px; 
+                min-width: 35px;
+                border-bottom-width: 4px;
+            }
+            .word-block::before {
+                width: 12px;
+                height: 6px;
+                top: -5px;
+            }
+            .word-block::after {
+                width: 12px;
+                height: 6px;
+                top: -5px;
+            }
             .word-cloud { gap: 8px 10px; padding: 15px 8px; }
         }
     </style>
@@ -298,11 +425,14 @@
 
 <div class="question-container">
     <h1 class="stage-title">🧩 PATTERN BUILDER</h1>
+    <div class="sub-title">🇰🇷 Korean Words → English Sentences</div>
     <div class="class-badge" id="classDisplay">Class: <span>2:00 PM Class (A1)</span></div>
 
     <div class="question-number" id="questionNumber"></div>
 
-    <!-- WORD CLOUD - scattered colored blocks like the image -->
+    <div class="hint-text">💡 Arrange the Korean word blocks to form the English sentence!</div>
+
+    <!-- WORD CLOUD - LEGO blocks with Korean words -->
     <div class="word-cloud" id="wordCloud"></div>
 
     <div class="team-stats" id="teamStats">
@@ -311,7 +441,7 @@
     </div>
 
     <div class="answer-section" id="answerSection">
-        <div class="answer-label">✓ CORRECT ANSWER</div>
+        <div class="answer-label">✓ CORRECT ENGLISH SENTENCE</div>
         <div class="answer-text" id="answerText"></div>
     </div>
 
@@ -341,56 +471,84 @@
 </div>
 
 <script>
-// Sample questions based on the image words
+// 10 Sample questions: Korean words → English sentences
 const SAMPLE_QUESTIONS = [
     { 
-        scrambled: "The tree is green", 
-        correct: "The tree is green" 
+        scrambled: "저는 학교에 갑니다", 
+        correct: "I go to school" 
     },
     { 
-        scrambled: "The cat sleeps everyday", 
-        correct: "The cat sleeps everyday" 
+        scrambled: "그녀는 책을 읽습니다", 
+        correct: "She reads a book" 
     },
     { 
-        scrambled: "The dog is fast", 
-        correct: "The dog is fast" 
+        scrambled: "우리는 축구를 합니다", 
+        correct: "We play soccer" 
     },
     { 
-        scrambled: "She is a good girl", 
-        correct: "She is a good girl" 
+        scrambled: "그는 피자를 좋아합니다", 
+        correct: "He likes pizza" 
     },
     { 
-        scrambled: "The boy jumps high", 
-        correct: "The boy jumps high" 
+        scrambled: "고양이가 잠을 잡니다", 
+        correct: "The cat sleeps" 
+    },
+    { 
+        scrambled: "나는 사과를 먹습니다", 
+        correct: "I eat an apple" 
+    },
+    { 
+        scrambled: "그녀는 노래를 부릅니다", 
+        correct: "She sings a song" 
+    },
+    { 
+        scrambled: "우리는 영화를 봅니다", 
+        correct: "We watch a movie" 
+    },
+    { 
+        scrambled: "그는 물을 마십니다", 
+        correct: "He drinks water" 
+    },
+    { 
+        scrambled: "아이들이 놀고 있습니다", 
+        correct: "The children are playing" 
     }
 ];
 
-// Part of speech mapper
+// Part of speech mapper (for Korean words, we still use the same color system)
 function getWordClass(word) {
-    const w = word.toLowerCase().replace(/[^a-z']/g, '');
+    const w = word.toLowerCase().replace(/[^a-z가-힣']/g, '');
     if (!w) return 'word-other';
 
-    const pronouns = ['i','you','he','she','it','we','they','me','him','her','us','them','my','your','his','her','our','their'];
-    if (pronouns.includes(w)) return 'word-pronoun';
+    // Korean pronouns
+    const pronouns = ['저는','나는','그녀는','그는','우리는','내가','우리','그들','그녀','그','나','너','우리'];
+    if (pronouns.some(p => w.includes(p) || p.includes(w))) return 'word-pronoun';
 
-    const articles = ['a','an','the'];
-    if (articles.includes(w)) return 'word-article';
+    // Korean articles/determiners (not many in Korean, but we can check for markers)
+    const articles = ['이','그','저'];
+    if (articles.includes(w) || w === '그') return 'word-article';
 
-    const preps = ['in','on','at','to','for','with','from','of','by','about','into','through','without','between','among','under','over','above','below'];
-    if (preps.includes(w)) return 'word-preposition';
+    // Korean prepositions/particles
+    const preps = ['에','에게','으로','에서','까지','부터','와','과','를','을','가','이'];
+    if (preps.some(p => w === p || w.includes(p))) return 'word-preposition';
 
-    const conj = ['and','but','or','so','because','if','when','while','until','since','although'];
-    if (conj.includes(w)) return 'word-conjunction';
+    // Korean conjunctions
+    const conj = ['그리고','하지만','그래서','또는','때문에','만약','언제','동안'];
+    if (conj.some(c => w.includes(c) || c.includes(w))) return 'word-conjunction';
 
-    const adverbs = ['very','really','quite','too','so','almost','always','often','never','sometimes','usually','already','still','just','even','only','also','well','fast','slowly','carefully','quickly','suddenly','finally','then','now','today','tomorrow','yesterday','here','there','everywhere','high'];
-    if (adverbs.includes(w)) return 'word-adverb';
+    // Korean adverbs
+    const adverbs = ['매우','정말','아주','거의','항상','자주','가끔','벌써','아직','또한','잘','빨리','천천히','조심히','갑자기','드디어','이제','오늘','내일','어제','여기','저기'];
+    if (adverbs.some(a => w.includes(a) || a.includes(w))) return 'word-adverb';
 
-    const adjectives = ['good','bad','new','old','big','small','long','short','high','low','beautiful','ugly','nice','kind','smart','funny','happy','sad','angry','tired','hungry','scared','brave','lazy','busy','easy','difficult','hard','soft','warm','cool','hot','cold','wet','dry','clean','dirty','fast','slow','early','late','right','wrong','true','false','real','fake','whole','half','full','empty','open','closed','free','busy','safe','dangerous','sick','healthy','alive','dead','young','old','rich','poor','famous','strange','wonderful','terrible','excellent','green','brown'];
-    if (adjectives.includes(w)) return 'word-adjective';
+    // Korean adjectives
+    const adjectives = ['좋은','나쁜','새로운','오래된','큰','작은','긴','짧은','높은','낮은','아름다운','멋진','친절한','똑똑한','재미있는','행복한','슬픈','화난','피곤한','배고픈','무서운','용감한','게으른','바쁜','쉬운','어려운','딱딱한','부드러운','따뜻한','시원한','더운','추운','젖은','마른','깨끗한','더러운','빠른','느린','이른','늦은','맞는','틀린'];
+    if (adjectives.some(a => w.includes(a) || a.includes(w))) return 'word-adjective';
 
-    const verbs = ['be','am','are','is','was','were','have','has','had','do','does','did','go','went','gone','make','made','take','took','see','saw','come','came','get','got','use','used','find','found','give','gave','tell','told','work','worked','think','thought','know','knew','say','said','ask','asked','help','helped','show','showed','try','tried','call','called','look','looked','walk','walked','run','ran','eat','ate','drink','drank','sleep','slept','read','read','write','wrote','speak','spoke','talk','talked','listen','listened','hear','heard','watch','watched','play','played','study','studied','learn','learned','teach','taught','buy','bought','sell','sold','pay','paid','cost','cut','put','set','let','keep','kept','hold','held','stand','stood','sit','sat','bring','brought','send','sent','build','built','begin','began','start','started','stop','stopped','move','moved','change','changed','open','opened','close','closed','turn','turned','break','broke','fix','fixed','carry','carried','choose','chose','forget','forgot','remember','remembered','need','needed','want','wanted','like','liked','love','loved','hate','hated','prefer','preferred','enjoy','enjoyed','mind','minded','mean','meant','understand','understood','believe','believed','feel','felt','seem','seemed','appear','appeared','belong','belonged','contain','contained','include','included','represent','represented','consider','considered','allow','allowed','expect','expected','require','required','suggest','suggested','offer','offered','decide','decided','plan','planned','hope','hoped','wish','wished','promise','promised','agree','agreed','disagree','disagreed','explain','explained','imagine','imagined','suppose','supposed','doubt','doubted','wonder','wondered','realize','realized','recognize','recognized','jumps','sleeps'];
-    if (verbs.includes(w)) return 'word-verb';
+    // Korean verbs
+    const verbs = ['가다','가','갑니다','읽다','읽','읽습니다','하다','합','합니다','좋아하다','좋아','좋아합니다','먹다','먹','먹습니다','자다','자','잡니다','부르다','부르','부릅니다','보다','보','봅니다','마시다','마시','마십니다','놀다','놀','놀고','있다','있','입니다','되다','되','됩니다','오다','오','옵니다','살다','살','삽니다','만들다','만들','만듭니다','알다','알','압니다','말하다','말하','말합니다','듣다','듣','듣습니다','쓰다','쓰','씁니다','일하다','일하','일합니다','운동하다','운동하','운동합니다','공부하다','공부하','공부합니다','노래하다','노래하','노래합니다','춤추다','춤추','춤춥니다','요리하다','요리하','요리합니다','청소하다','청소하','청소합니다','씻다','씻','씻습니다','입다','입','입습니다','신다','신','신습니다','벗다','벗','벗습니다'];
+    if (verbs.some(v => w.includes(v) || v.includes(w))) return 'word-verb';
 
+    // If nothing matched -> noun
     return 'word-noun';
 }
 
@@ -403,7 +561,7 @@ function shuffleArray(array) {
     return array;
 }
 
-// Render word cloud with scattered blocks
+// Render word cloud with LEGO blocks
 function renderWordCloud(sentence) {
     const words = sentence.split(/\s+/).filter(w => w.length > 0);
     const container = $('#wordCloud');
@@ -417,7 +575,13 @@ function renderWordCloud(sentence) {
         const block = $('<span class="word-block"></span>')
             .addClass(cls)
             .text(word)
-            .css('animation-delay', (index * 0.05) + 's');
+            .css('animation-delay', (index * 0.06) + 's');
+        
+        // Add long-word class for words with 4+ characters (gives them 2 studs)
+        if (word.length >= 4) {
+            block.addClass('long-word');
+        }
+        
         container.append(block);
     });
 }
