@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Pattern Builder - Round 1</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Bubblegum Sans', cursive;
+            background: linear-gradient(135deg, #1A3A5F, #0F2A44);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow: auto;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 25px;
+            padding: 20px 25px;
+            max-width: 1000px;
+            width: 95%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            margin: 20px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            border: 3px solid #FFD700;
+        }
+
+        .stage-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 28px;
+            color: #1A3A5F;
+            margin-bottom: 5px;
+            flex-shrink: 0;
+            text-shadow: 2px 2px 0 #FFD700;
+        }
+
+        .class-badge {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            background: #f0f0f0;
+            display: inline-block;
+            padding: 4px 20px;
+            border-radius: 50px;
+            margin-top: 3px;
+        }
+
+        .class-badge span {
+            font-weight: bold;
+            color: #1A3A5F;
+        }
+
+        .question-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 18px;
+            color: #4ECDC4;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .word-cloud {
+            background: linear-gradient(135deg, #1A3A5F, #2B4F7C);
+            border-radius: 18px;
+            padding: 30px 20px;
+            min-height: 300px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            border: 2px solid #FFD700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px 20px;
+        }
+
+        .word-block {
+            font-family: 'Fredoka One', cursive;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 16px;
+            color: #1A1A1A;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            display: inline-block;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
+            user-select: none;
+            animation: floatIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .word-block:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+        }
+
+        .word-block:active {
+            transform: scale(0.95);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        /* Color families */
+        .word-noun { background: #FF6B6B; }        /* Red */
+        .word-verb { background: #4ECDC4; }         /* Teal */
+        .word-pronoun { background: #FFD93D; }      /* Yellow */
+        .word-adjective { background: #6BCB77; }    /* Green */
+        .word-adverb { background: #A66CFF; }       /* Purple */
+        .word-preposition { background: #FF8E53; }  /* Orange */
+        .word-article { background: #F9A8D4; }      /* Pink */
+        .word-conjunction { background: #74B9FF; }  /* Light Blue */
+        .word-interjection { background: #FD79A8; } /* Rose */
+        .word-other { background: #B0BEC5; }        /* Grey */
+
+        .answer-section {
+            background: #f8f9fa;
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+            flex-shrink: 0;
+            border: 2px solid #4ECDC4;
+        }
+
+        .answer-label {
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
+            color: #4ECDC4;
+            margin-bottom: 8px;
+        }
+
+        .answer-text {
+            font-size: 24px;
+            color: #1A3A5F;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #4ECDC4;
+            word-wrap: break-word;
+            font-weight: bold;
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            padding: 12px;
+            background: linear-gradient(145deg, #FFD700, #FDB931);
+            border-radius: 18px;
+            color: #1A3A5F;
+            font-weight: bold;
+            flex-wrap: wrap;
+            gap: 30px;
+            flex-shrink: 0;
+        }
+
+        .team-stat {
+            font-size: 18px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .team-stat span { font-size: 24px; margin-right: 8px; }
+        .team-stat input {
+            width: 60px;
+            padding: 5px;
+            font-size: 16px;
+            text-align: center;
+            font-family: 'Fredoka One', cursive;
+            border: 2px solid #1A3A5F;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding: 12px 0 5px 0;
+            background: white;
+            border-top: 2px solid #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        .control-btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 18px;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            transition: all 0.1s ease;
+            min-width: 120px;
+        }
+
+        .control-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+        .btn-show { background: #4ECDC4; box-shadow: 0 4px 0 #2A8F87; }
+        .btn-next { background: #FFD700; color: #333; box-shadow: 0 4px 0 #C4A000; }
+        .btn-home { background: #95a5a6; box-shadow: 0 4px 0 #6C7A7D; }
+
+        .hidden { display: none !important; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 35px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: modalPop 0.5s ease-out;
+            border: 5px solid #FFD700;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 60px; margin-bottom: 15px; }
+        .modal-content h2 { font-family: 'Fredoka One', cursive; font-size: 34px; color: #1A3A5F; margin-bottom: 15px; }
+        .modal-content p { font-size: 20px; margin-bottom: 25px; color: #333; }
+
+        .modal-btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
+            padding: 10px 35px;
+            background: linear-gradient(145deg, #1A3A5F, #0F2A44);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 #0A1A2F;
+        }
+
+        .modal-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0A1A2F; }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .stage-title { font-size: 22px; }
+            .word-block { font-size: 18px; padding: 8px 14px; }
+            .word-cloud { gap: 10px 14px; padding: 20px 10px; min-height: 200px; }
+            .answer-text { font-size: 18px; }
+            .control-btn { font-size: 14px; padding: 8px 16px; min-width: 100px; }
+            .team-stat { font-size: 14px; }
+            .team-stat span { font-size: 20px; }
+            .team-stat input { width: 50px; font-size: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .word-block { font-size: 16px; padding: 6px 12px; border-radius: 12px; }
+            .word-cloud { gap: 8px 10px; padding: 15px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="question-container">
+    <h1 class="stage-title">🧩 PATTERN BUILDER</h1>
+    <div class="class-badge" id="classDisplay">Class: <span>2:00 PM Class (A1)</span></div>
+
+    <div class="question-number" id="questionNumber"></div>
+
+    <!-- WORD CLOUD - scattered colored blocks like the image -->
+    <div class="word-cloud" id="wordCloud"></div>
+
+    <div class="team-stats" id="teamStats">
+        <div class="team-stat"><span>🔴 Team A</span> <input type="number" id="scoreA" value="0" min="0" step="1"></div>
+        <div class="team-stat"><span>🔵 Team B</span> <input type="number" id="scoreB" value="0" min="0" step="1"></div>
+    </div>
+
+    <div class="answer-section" id="answerSection">
+        <div class="answer-label">✓ CORRECT ANSWER</div>
+        <div class="answer-text" id="answerText"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn btn-show" id="showAnswerBtn">Show Answer</button>
+        <button class="control-btn btn-next hidden" id="nextBtn">Next ➤</button>
+        <button class="control-btn btn-home" onclick="location.href='index.html'">Home</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="timesUpModal">
+    <div class="modal-content">
+        <div class="modal-icon">⏰</div>
+        <h2>TIME'S UP!</h2>
+        <p>The team battle has ended</p>
+        <button class="modal-btn" id="modalOkBtn">OK</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="completeModal">
+    <div class="modal-content">
+        <div class="modal-icon">🏆</div>
+        <h2>BATTLE COMPLETE!</h2>
+        <p>Great job, teams!</p>
+        <button class="modal-btn" id="completeOkBtn">OK</button>
+    </div>
+</div>
+
+<script>
+// Sample questions based on the image words
+const SAMPLE_QUESTIONS = [
+    { 
+        scrambled: "The tree is green", 
+        correct: "The tree is green" 
+    },
+    { 
+        scrambled: "The cat sleeps everyday", 
+        correct: "The cat sleeps everyday" 
+    },
+    { 
+        scrambled: "The dog is fast", 
+        correct: "The dog is fast" 
+    },
+    { 
+        scrambled: "She is a good girl", 
+        correct: "She is a good girl" 
+    },
+    { 
+        scrambled: "The boy jumps high", 
+        correct: "The boy jumps high" 
+    }
+];
+
+// Part of speech mapper
+function getWordClass(word) {
+    const w = word.toLowerCase().replace(/[^a-z']/g, '');
+    if (!w) return 'word-other';
+
+    const pronouns = ['i','you','he','she','it','we','they','me','him','her','us','them','my','your','his','her','our','their'];
+    if (pronouns.includes(w)) return 'word-pronoun';
+
+    const articles = ['a','an','the'];
+    if (articles.includes(w)) return 'word-article';
+
+    const preps = ['in','on','at','to','for','with','from','of','by','about','into','through','without','between','among','under','over','above','below'];
+    if (preps.includes(w)) return 'word-preposition';
+
+    const conj = ['and','but','or','so','because','if','when','while','until','since','although'];
+    if (conj.includes(w)) return 'word-conjunction';
+
+    const adverbs = ['very','really','quite','too','so','almost','always','often','never','sometimes','usually','already','still','just','even','only','also','well','fast','slowly','carefully','quickly','suddenly','finally','then','now','today','tomorrow','yesterday','here','there','everywhere','high'];
+    if (adverbs.includes(w)) return 'word-adverb';
+
+    const adjectives = ['good','bad','new','old','big','small','long','short','high','low','beautiful','ugly','nice','kind','smart','funny','happy','sad','angry','tired','hungry','scared','brave','lazy','busy','easy','difficult','hard','soft','warm','cool','hot','cold','wet','dry','clean','dirty','fast','slow','early','late','right','wrong','true','false','real','fake','whole','half','full','empty','open','closed','free','busy','safe','dangerous','sick','healthy','alive','dead','young','old','rich','poor','famous','strange','wonderful','terrible','excellent','green','brown'];
+    if (adjectives.includes(w)) return 'word-adjective';
+
+    const verbs = ['be','am','are','is','was','were','have','has','had','do','does','did','go','went','gone','make','made','take','took','see','saw','come','came','get','got','use','used','find','found','give','gave','tell','told','work','worked','think','thought','know','knew','say','said','ask','asked','help','helped','show','showed','try','tried','call','called','look','looked','walk','walked','run','ran','eat','ate','drink','drank','sleep','slept','read','read','write','wrote','speak','spoke','talk','talked','listen','listened','hear','heard','watch','watched','play','played','study','studied','learn','learned','teach','taught','buy','bought','sell','sold','pay','paid','cost','cut','put','set','let','keep','kept','hold','held','stand','stood','sit','sat','bring','brought','send','sent','build','built','begin','began','start','started','stop','stopped','move','moved','change','changed','open','opened','close','closed','turn','turned','break','broke','fix','fixed','carry','carried','choose','chose','forget','forgot','remember','remembered','need','needed','want','wanted','like','liked','love','loved','hate','hated','prefer','preferred','enjoy','enjoyed','mind','minded','mean','meant','understand','understood','believe','believed','feel','felt','seem','seemed','appear','appeared','belong','belonged','contain','contained','include','included','represent','represented','consider','considered','allow','allowed','expect','expected','require','required','suggest','suggested','offer','offered','decide','decided','plan','planned','hope','hoped','wish','wished','promise','promised','agree','agreed','disagree','disagreed','explain','explained','imagine','imagined','suppose','supposed','doubt','doubted','wonder','wondered','realize','realized','recognize','recognized','jumps','sleeps'];
+    if (verbs.includes(w)) return 'word-verb';
+
+    return 'word-noun';
+}
+
+// Shuffle array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// Render word cloud with scattered blocks
+function renderWordCloud(sentence) {
+    const words = sentence.split(/\s+/).filter(w => w.length > 0);
+    const container = $('#wordCloud');
+    container.empty();
+    
+    // Randomize order for scatter effect
+    const shuffledWords = shuffleArray([...words]);
+    
+    shuffledWords.forEach((word, index) => {
+        const cls = getWordClass(word);
+        const block = $('<span class="word-block"></span>')
+            .addClass(cls)
+            .text(word)
+            .css('animation-delay', (index * 0.05) + 's');
+        container.append(block);
+    });
+}
+
+// Game logic
+let questions = [];
+let currentIndex = 0;
+let timerTimeout;
+
+$(document).ready(function () {
+    questions = shuffleArray([...SAMPLE_QUESTIONS]);
+    console.log('Questions loaded. Total:', questions.length);
+    showQuestion();
+});
+
+function showQuestion() {
+    if (currentIndex >= questions.length) {
+        clearTimeout(timerTimeout);
+        showCompleteModal();
+        return;
+    }
+
+    const q = questions[currentIndex];
+    $('#questionNumber').text(`Question ${currentIndex + 1} of ${questions.length}`);
+    renderWordCloud(q.scrambled);
+    $('#answerText').text(q.correct);
+
+    $('#answerSection').hide();
+    $('#showAnswerBtn').removeClass('hidden');
+    $('#nextBtn').addClass('hidden');
+}
+
+function showTimesUpModal() {
+    clearTimeout(timerTimeout);
+    $('#timesUpModal').fadeIn(300).css('display', 'flex');
+}
+
+function showCompleteModal() {
+    $('#completeModal').fadeIn(300).css('display', 'flex');
+}
+
+$('#showAnswerBtn').on('click', function () {
+    $('#answerSection').slideDown(200);
+    $(this).addClass('hidden');
+    $('#nextBtn').removeClass('hidden');
+});
+
+$('#nextBtn').on('click', function () {
+    currentIndex++;
+    showQuestion();
+});
+
+$('#modalOkBtn, #completeOkBtn').on('click', function() {
+    location.href = 'index.html';
+});
+
+window.addEventListener('beforeunload', function() {
+    clearTimeout(timerTimeout);
+});
+</script>
+
+</body>
+</html>
