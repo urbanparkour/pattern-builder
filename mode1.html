@@ -25,6 +25,88 @@
             overflow: auto;
         }
 
+        /* ===== TIMER BAR AT TOP ===== */
+        .timer-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: rgba(0,0,0,0.15);
+            z-index: 1000;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #2ED573, #1E8449);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: countdown 900s linear forwards;
+            box-shadow: 0 0 20px rgba(46, 213, 115, 0.4);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .timer-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+            border-radius: 0 6px 6px 0;
+        }
+
+        @keyframes countdown {
+            from { width: 100%; left: 0; }
+            to { width: 0%; left: 0; }
+        }
+
+        /* Timer warning state (last 30 seconds) */
+        .timer-bar.warning {
+            background: linear-gradient(90deg, #FF4757, #C0392B) !important;
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.6) !important;
+            animation: countdown-warning 30s linear forwards !important;
+        }
+
+        @keyframes countdown-warning {
+            from { width: 100%; left: 0; }
+            to { width: 0%; left: 0; }
+        }
+
+        /* Time display text */
+        .timer-display {
+            position: fixed;
+            top: 14px;
+            right: 16px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            z-index: 1001;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+            letter-spacing: 1px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .timer-display.warning {
+            color: #FF4757;
+            animation: pulse 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        /* ===== QUESTION CONTAINER ===== */
         .question-container {
             background: white;
             border-radius: 25px;
@@ -39,6 +121,7 @@
             display: flex;
             flex-direction: column;
             border: 3px solid #FFD700;
+            margin-top: 25px;
         }
 
         .stage-title {
@@ -428,11 +511,18 @@
             .question-container {
                 padding: 12px 15px;
                 max-height: 95vh;
+                margin-top: 25px;
             }
             .team-stat { font-size: 14px; min-width: 80px; }
             .team-stat span { font-size: 18px; }
             .team-stat input { width: 45px; font-size: 13px; }
             .control-btn { font-size: 14px; padding: 7px 16px; min-width: 80px; }
+            .timer-display {
+                font-size: 12px;
+                padding: 3px 10px;
+                top: 14px;
+                right: 12px;
+            }
         }
 
         @media (max-width: 600px) {
@@ -469,6 +559,7 @@
                 padding: 10px 12px;
                 max-height: 92vh;
                 border-radius: 18px;
+                margin-top: 25px;
             }
             .answer-label { font-size: 15px; }
             .team-stats { gap: 12px; padding: 8px; }
@@ -478,6 +569,13 @@
             .controls { gap: 6px; padding: 8px 0 2px 0; }
             .control-btn { font-size: 12px; padding: 6px 12px; min-width: 60px; }
             .answer-section { padding: 8px 10px; }
+            .timer-container { height: 8px; }
+            .timer-display {
+                font-size: 10px;
+                padding: 2px 8px;
+                top: 12px;
+                right: 8px;
+            }
         }
 
         @media (max-height: 700px) {
@@ -509,14 +607,28 @@
             .question-container {
                 padding: 8px 12px;
                 max-height: 98vh;
+                margin-top: 20px;
             }
             .team-stats { padding: 6px; margin: 4px 0; }
             .controls { padding: 6px 0 2px 0; margin-top: 4px; }
             .answer-section { padding: 6px 10px; }
+            .timer-container { height: 6px; }
+            .timer-display {
+                font-size: 10px;
+                padding: 2px 8px;
+                top: 10px;
+                right: 8px;
+            }
         }
     </style>
 </head>
 <body>
+
+<!-- ===== TIMER BAR AT TOP ===== -->
+<div class="timer-container">
+    <div class="timer-bar" id="timerBar"></div>
+</div>
+<div class="timer-display" id="timerDisplay">15:00</div>
 
 <div class="question-container">
     <h1 class="stage-title">🧩 PATTERN BUILDER</h1>
@@ -565,17 +677,14 @@
 
 <script>
 // ===== 9 SENTENCES FROM 2PM WEDNESDAY WORKSHEET (A2) =====
-// YELLOW = Subject, GREEN = Verb, RED = Object, WHITE = Everything else
 const SAMPLE_QUESTIONS = [
     { 
         scrambled: "나는 밖에서 놀 거야", 
         correct: "I'm going to play outside",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '놀': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -587,12 +696,10 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 친구들을 만날 거야", 
         correct: "I'm going to meet my friends",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '친구들을': 'color-adjective',
             '만날': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -605,13 +712,11 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 더 열심히 공부할 거야", 
         correct: "I'm going to study harder",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '공부할': 'color-verb',
             '거야': 'color-verb',
             '더': 'color-other',
             '열심히': 'color-other',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -623,13 +728,11 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 할머니, 할아버지를 방문할 거야", 
         correct: "I'm going to visit my grandparents",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '할머니': 'color-adjective',
             '할아버지를': 'color-adjective',
             '방문할': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -642,11 +745,9 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 샤워할 거야", 
         correct: "I'm going to take a shower",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '샤워할': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -659,12 +760,10 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 창가에 앉을 거야", 
         correct: "I'm going to sit by the window",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '창가에': 'color-other',
             '앉을': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -678,12 +777,10 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 가족과 외식할 거야", 
         correct: "I'm going to eat out with my family",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '가족과': 'color-other',
             '외식할': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -698,13 +795,11 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 수영하는 것을 배울 거야", 
         correct: "I'm going to learn to swim",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '수영하는': 'color-adjective',
             '것을': 'color-adjective',
             '배울': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-other',
@@ -716,13 +811,11 @@ const SAMPLE_QUESTIONS = [
         scrambled: "나는 내년에 4학년이 될 거야", 
         correct: "I'm going to be in fourth grade next year",
         colorMap: {
-            // Korean
             '나는': 'color-subject',
             '내년에': 'color-other',
             '4학년이': 'color-adjective',
             '될': 'color-verb',
             '거야': 'color-verb',
-            // English
             "i'm": 'color-subject',
             'going': 'color-verb',
             'to': 'color-verb',
@@ -735,64 +828,6 @@ const SAMPLE_QUESTIONS = [
         }
     }
 ];
-
-// ===== COLOR MAPPING FUNCTION =====
-// Each word gets a color based on its grammatical role
-// Korean and English words with the SAME role get the SAME color!
-function getWordColor(word, isKorean = true) {
-    const w = word.toLowerCase().trim();
-    
-    // ----- SUBJECT (Yellow) -----
-    const koreanSubjects = ['나는', '저는', '그는', '그녀는', '우리는', '내가', '제가', '네가', '우리가'];
-    const englishSubjects = ['i', "i'm", 'you', 'he', 'she', 'it', 'we', 'they'];
-    if (koreanSubjects.includes(w) || englishSubjects.includes(w)) {
-        return 'color-subject';
-    }
-    
-    // ----- PREPOSITION (Orange) ===== "to" goes here, not verb
-    const koreanPreps = ['창가에', '가족과', '에게', '에', '와', '와는', '로', '부터', '까지', '밖에서'];
-    const englishPreps = ['by', 'with', 'in', 'to', 'at', 'on', 'for', 'from', 'of', 'out', 'outside'];
-    if (koreanPreps.includes(w) || englishPreps.includes(w)) {
-        return 'color-preposition';
-    }
-    
-    // ----- OBJECT (Red) ===== CHECK BEFORE VERBS so compound words like "샤워할" match "샤워" first
-    const koreanObjects = ['친구들을', '친구들', '할머니', '할아버지를', '수영하는', '것을', '4학년이', '4학년', '샤워'];
-    const englishObjects = ['friends', 'grandparents', 'shower', 'window', 'family', 'swim', 'fourth', 'grade'];
-    if (koreanObjects.some(o => w === o || w.includes(o)) || englishObjects.some(o => w === o)) {
-        return 'color-adjective';
-    }
-    
-    // ----- VERB (Green) -----
-    const koreanVerbs = ['놀', '만날', '공부할', '방문할', '샤워할', '앉을', '외식할', '배울', '될', '거야', '갑니다', '읽습니다', '합니다', '먹습니다', '잡니다', '봅니다', '마십니다', '간다', '한다'];
-    const englishVerbs = ['go', 'going', 'play', 'meet', 'study', 'visit', 'take', 'sit', 'eat', 'learn', 'swim', 'be', 'being'];
-    if (koreanVerbs.some(v => w === v || w.includes(v)) || englishVerbs.includes(w)) {
-        return 'color-verb';
-    }
-    
-    // ----- ADVERB (Purple) -----
-    const koreanAdverbs = ['더', '열심히', '내년에', '다음', '내년', '년'];
-    const englishAdverbs = ['harder', 'next', 'year'];
-    if (koreanAdverbs.includes(w) || englishAdverbs.includes(w)) {
-        return 'color-adverb';
-    }
-    
-    // ----- ARTICLE (Pink) -----
-    const englishArticles = ['a', 'an', 'the'];
-    if (englishArticles.includes(w)) {
-        return 'color-article';
-    }
-    
-    // ----- ADJECTIVE (Blue) -----
-    const koreanAdjectives = ['새로운', '큰', '작은', '예쁜', '못생긴', '좋은', '나쁜'];
-    const englishAdjectives = ['my', 'your', 'his', 'her', 'their', 'new', 'big', 'small', 'good', 'bad', 'pretty', 'ugly'];
-    if (koreanAdjectives.includes(w) || englishAdjectives.includes(w)) {
-        return 'color-adjective';
-    }
-    
-    // Default
-    return 'color-other';
-}
 
 // Shuffle array
 function shuffleArray(array) {
@@ -847,6 +882,39 @@ function renderAnswer(sentence, colorMap) {
     });
 }
 
+// ===== TIMER LOGIC =====
+let timerInterval;
+let timeRemaining = 900; // 15 minutes in seconds
+const totalTime = 900;
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    const display = $('#timerDisplay');
+    display.text(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+    
+    // Warning state when less than 30 seconds
+    if (timeRemaining <= 30) {
+        display.addClass('warning');
+        $('#timerBar').addClass('warning');
+    } else {
+        display.removeClass('warning');
+        $('#timerBar').removeClass('warning');
+    }
+}
+
+function startTimer() {
+    timerInterval = setInterval(function() {
+        timeRemaining--;
+        updateTimerDisplay();
+        
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            showTimesUpModal();
+        }
+    }, 1000);
+}
+
 // Game logic
 let questions = [];
 let currentIndex = 0;
@@ -856,11 +924,14 @@ $(document).ready(function () {
     questions = shuffleArray([...SAMPLE_QUESTIONS]);
     console.log('Questions loaded. Total:', questions.length);
     showQuestion();
+    
+    // Start timer
+    startTimer();
 });
 
 function showQuestion() {
     if (currentIndex >= questions.length) {
-        clearTimeout(timerTimeout);
+        clearInterval(timerInterval);
         showCompleteModal();
         return;
     }
@@ -876,11 +947,13 @@ function showQuestion() {
 }
 
 function showTimesUpModal() {
-    clearTimeout(timerTimeout);
+    clearInterval(timerInterval);
     $('#timesUpModal').fadeIn(300).css('display', 'flex');
+    $('#timerBar').css('animation-play-state', 'paused');
 }
 
 function showCompleteModal() {
+    clearInterval(timerInterval);
     $('#completeModal').fadeIn(300).css('display', 'flex');
 }
 
@@ -896,11 +969,12 @@ $('#nextBtn').on('click', function () {
 });
 
 $('#modalOkBtn, #completeOkBtn').on('click', function() {
+    clearInterval(timerInterval);
     location.href = 'index.html';
 });
 
 window.addEventListener('beforeunload', function() {
-    clearTimeout(timerTimeout);
+    clearInterval(timerInterval);
 });
 </script>
 
