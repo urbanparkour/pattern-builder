@@ -25,7 +25,6 @@
             overflow: auto;
         }
 
-        /* ===== TIMER BAR AT TOP ===== */
         .timer-container {
             position: fixed;
             top: 0;
@@ -66,7 +65,6 @@
             to { width: 0%; left: 0; }
         }
 
-        /* Timer warning state (last 30 seconds) */
         .timer-bar.warning {
             background: linear-gradient(90deg, #FF4757, #C0392B) !important;
             box-shadow: 0 0 30px rgba(255, 71, 87, 0.6) !important;
@@ -78,7 +76,6 @@
             to { width: 0%; left: 0; }
         }
 
-        /* Time display text */
         .timer-display {
             position: fixed;
             top: 14px;
@@ -106,7 +103,6 @@
             100% { opacity: 0.4; }
         }
 
-        /* ===== QUESTION CONTAINER ===== */
         .question-container {
             background: white;
             border-radius: 25px;
@@ -676,155 +672,284 @@
 </div>
 
 <script>
-// ===== 9 SENTENCES FROM 2PM WEDNESDAY WORKSHEET (A2) =====
+// ===== 30 SENTENCES FOR 2PM CLASS (A1 LEVEL) =====
 const SAMPLE_QUESTIONS = [
+    // Original 9 sentences
     { 
         scrambled: "나는 밖에서 놀 거야", 
         correct: "I'm going to play outside",
         colorMap: {
-            '나는': 'color-subject',
-            '놀': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'play': 'color-verb',
-            'outside': 'color-other'
+            '나는': 'color-subject', '놀': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'play': 'color-verb', 'outside': 'color-other'
         }
     },
     { 
         scrambled: "나는 친구들을 만날 거야", 
         correct: "I'm going to meet my friends",
         colorMap: {
-            '나는': 'color-subject',
-            '친구들을': 'color-adjective',
-            '만날': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'meet': 'color-verb',
-            'my': 'color-other',
-            'friends': 'color-adjective'
+            '나는': 'color-subject', '친구들을': 'color-adjective', '만날': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'meet': 'color-verb', 'my': 'color-other', 'friends': 'color-adjective'
         }
     },
     { 
         scrambled: "나는 더 열심히 공부할 거야", 
         correct: "I'm going to study harder",
         colorMap: {
-            '나는': 'color-subject',
-            '공부할': 'color-verb',
-            '거야': 'color-verb',
-            '더': 'color-other',
-            '열심히': 'color-other',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'study': 'color-verb',
-            'harder': 'color-other'
+            '나는': 'color-subject', '공부할': 'color-verb', '거야': 'color-verb',
+            '더': 'color-other', '열심히': 'color-other',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'study': 'color-verb', 'harder': 'color-other'
         }
     },
     { 
         scrambled: "나는 할머니, 할아버지를 방문할 거야", 
         correct: "I'm going to visit my grandparents",
         colorMap: {
-            '나는': 'color-subject',
-            '할머니': 'color-adjective',
-            '할아버지를': 'color-adjective',
-            '방문할': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'visit': 'color-verb',
-            'my': 'color-other',
-            'grandparents': 'color-adjective'
+            '나는': 'color-subject', '할머니': 'color-adjective', '할아버지를': 'color-adjective',
+            '방문할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'visit': 'color-verb', 'my': 'color-other', 'grandparents': 'color-adjective'
         }
     },
     { 
         scrambled: "나는 샤워할 거야", 
         correct: "I'm going to take a shower",
         colorMap: {
-            '나는': 'color-subject',
-            '샤워할': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'take': 'color-verb',
-            'a': 'color-other',
-            'shower': 'color-verb'
+            '나는': 'color-subject', '샤워할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'take': 'color-verb', 'a': 'color-other', 'shower': 'color-verb'
         }
     },
     { 
         scrambled: "나는 창가에 앉을 거야", 
         correct: "I'm going to sit by the window",
         colorMap: {
-            '나는': 'color-subject',
-            '창가에': 'color-other',
-            '앉을': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'sit': 'color-verb',
-            'by': 'color-other',
-            'the': 'color-other',
-            'window': 'color-other'
+            '나는': 'color-subject', '창가에': 'color-other', '앉을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'sit': 'color-verb', 'by': 'color-other', 'the': 'color-other', 'window': 'color-other'
         }
     },
     { 
         scrambled: "나는 가족과 외식할 거야", 
         correct: "I'm going to eat out with my family",
         colorMap: {
-            '나는': 'color-subject',
-            '가족과': 'color-other',
-            '외식할': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'eat': 'color-verb',
-            'out': 'color-other',
-            'with': 'color-other',
-            'my': 'color-other',
-            'family': 'color-other'
+            '나는': 'color-subject', '가족과': 'color-other', '외식할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'eat': 'color-verb', 'out': 'color-other', 'with': 'color-other',
+            'my': 'color-other', 'family': 'color-other'
         }
     },
     { 
         scrambled: "나는 수영하는 것을 배울 거야", 
         correct: "I'm going to learn to swim",
         colorMap: {
-            '나는': 'color-subject',
-            '수영하는': 'color-adjective',
-            '것을': 'color-adjective',
-            '배울': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-other',
-            'learn': 'color-verb',
-            'swim': 'color-adjective'
+            '나는': 'color-subject', '수영하는': 'color-adjective', '것을': 'color-adjective',
+            '배울': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-other',
+            'learn': 'color-verb', 'swim': 'color-adjective'
         }
     },
     { 
         scrambled: "나는 내년에 4학년이 될 거야", 
         correct: "I'm going to be in fourth grade next year",
         colorMap: {
-            '나는': 'color-subject',
-            '내년에': 'color-other',
-            '4학년이': 'color-adjective',
-            '될': 'color-verb',
-            '거야': 'color-verb',
-            "i'm": 'color-subject',
-            'going': 'color-verb',
-            'to': 'color-verb',
-            'be': 'color-verb',
-            'in': 'color-other',
-            'fourth': 'color-adjective',
-            'grade': 'color-adjective',
-            'next': 'color-other',
-            'year': 'color-other'
+            '나는': 'color-subject', '내년에': 'color-other', '4학년이': 'color-adjective',
+            '될': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'be': 'color-verb', 'in': 'color-other', 'fourth': 'color-adjective',
+            'grade': 'color-adjective', 'next': 'color-other', 'year': 'color-other'
+        }
+    },
+    // Additional 21 sentences
+    { 
+        scrambled: "나는 아침을 먹을 거야", 
+        correct: "I'm going to eat breakfast",
+        colorMap: {
+            '나는': 'color-subject', '아침을': 'color-object', '먹을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'eat': 'color-verb', 'breakfast': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 저녁을 요리할 거야", 
+        correct: "I'm going to cook dinner",
+        colorMap: {
+            '나는': 'color-subject', '저녁을': 'color-object', '요리할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'cook': 'color-verb', 'dinner': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 학교에 갈 거야", 
+        correct: "I'm going to go to school",
+        colorMap: {
+            '나는': 'color-subject', '학교에': 'color-other', '갈': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'go': 'color-verb', 'school': 'color-other'
+        }
+    },
+    { 
+        scrambled: "나는 음악을 들을 거야", 
+        correct: "I'm going to listen to music",
+        colorMap: {
+            '나는': 'color-subject', '음악을': 'color-object', '들을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'listen': 'color-verb', 'music': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 운동할 거야", 
+        correct: "I'm going to exercise",
+        colorMap: {
+            '나는': 'color-subject', '운동할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'exercise': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 책을 읽을 거야", 
+        correct: "I'm going to read a book",
+        colorMap: {
+            '나는': 'color-subject', '책을': 'color-object', '읽을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'read': 'color-verb', 'a': 'color-article', 'book': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 영화를 볼 거야", 
+        correct: "I'm going to watch a movie",
+        colorMap: {
+            '나는': 'color-subject', '영화를': 'color-object', '볼': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'watch': 'color-verb', 'a': 'color-article', 'movie': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 게임을 할 거야", 
+        correct: "I'm going to play a game",
+        colorMap: {
+            '나는': 'color-subject', '게임을': 'color-object', '할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'play': 'color-verb', 'a': 'color-article', 'game': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 잠을 잘 거야", 
+        correct: "I'm going to sleep well",
+        colorMap: {
+            '나는': 'color-subject', '잠을': 'color-object', '잘': 'color-adverb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'sleep': 'color-verb', 'well': 'color-adverb'
+        }
+    },
+    { 
+        scrambled: "나는 일찍 일어날 거야", 
+        correct: "I'm going to wake up early",
+        colorMap: {
+            '나는': 'color-subject', '일찍': 'color-adverb', '일어날': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'wake': 'color-verb', 'up': 'color-other', 'early': 'color-adverb'
+        }
+    },
+    { 
+        scrambled: "나는 산책할 거야", 
+        correct: "I'm going to take a walk",
+        colorMap: {
+            '나는': 'color-subject', '산책할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'take': 'color-verb', 'a': 'color-article', 'walk': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 커피를 마실 거야", 
+        correct: "I'm going to drink coffee",
+        colorMap: {
+            '나는': 'color-subject', '커피를': 'color-object', '마실': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'drink': 'color-verb', 'coffee': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 친구에게 전화할 거야", 
+        correct: "I'm going to call my friend",
+        colorMap: {
+            '나는': 'color-subject', '친구에게': 'color-other', '전화할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'call': 'color-verb', 'my': 'color-other', 'friend': 'color-adjective'
+        }
+    },
+    { 
+        scrambled: "나는 편지를 쓸 거야", 
+        correct: "I'm going to write a letter",
+        colorMap: {
+            '나는': 'color-subject', '편지를': 'color-object', '쓸': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'write': 'color-verb', 'a': 'color-article', 'letter': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 그림을 그릴 거야", 
+        correct: "I'm going to draw a picture",
+        colorMap: {
+            '나는': 'color-subject', '그림을': 'color-object', '그릴': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'draw': 'color-verb', 'a': 'color-article', 'picture': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 한국어를 공부할 거야", 
+        correct: "I'm going to study Korean",
+        colorMap: {
+            '나는': 'color-subject', '한국어를': 'color-object', '공부할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'study': 'color-verb', 'korean': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 영어를 배울 거야", 
+        correct: "I'm going to learn English",
+        colorMap: {
+            '나는': 'color-subject', '영어를': 'color-object', '배울': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'learn': 'color-verb', 'english': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 자전거를 탈 거야", 
+        correct: "I'm going to ride a bike",
+        colorMap: {
+            '나는': 'color-subject', '자전거를': 'color-object', '탈': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'ride': 'color-verb', 'a': 'color-article', 'bike': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 시험을 볼 거야", 
+        correct: "I'm going to take a test",
+        colorMap: {
+            '나는': 'color-subject', '시험을': 'color-object', '볼': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'take': 'color-verb', 'a': 'color-article', 'test': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 청소할 거야", 
+        correct: "I'm going to clean",
+        colorMap: {
+            '나는': 'color-subject', '청소할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'clean': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 쇼핑할 거야", 
+        correct: "I'm going to go shopping",
+        colorMap: {
+            '나는': 'color-subject', '쇼핑할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'go': 'color-verb', 'shopping': 'color-verb'
         }
     }
 ];
@@ -885,7 +1010,6 @@ function renderAnswer(sentence, colorMap) {
 // ===== TIMER LOGIC =====
 let timerInterval;
 let timeRemaining = 900; // 15 minutes in seconds
-const totalTime = 900;
 
 function updateTimerDisplay() {
     const minutes = Math.floor(timeRemaining / 60);
@@ -893,7 +1017,6 @@ function updateTimerDisplay() {
     const display = $('#timerDisplay');
     display.text(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
     
-    // Warning state when less than 30 seconds
     if (timeRemaining <= 30) {
         display.addClass('warning');
         $('#timerBar').addClass('warning');
