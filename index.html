@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Pattern Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -23,30 +26,148 @@
             justify-content: center;
             background: #FFFFFF;
             padding: 20px;
+            font-family: 'Noto Sans KR', 'Bubblegum Sans', cursive, sans-serif;
         }
 
         .container {
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
         }
 
         .logo {
             max-width: 90%;
-            max-height: 90%;
+            max-height: 60vh;
             width: auto;
             height: auto;
             object-fit: contain;
             display: block;
         }
 
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 450px;
+            flex-shrink: 0;
+        }
+
+        .class-selector {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .class-dropdown {
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
+            padding: 14px 25px;
+            border: 3px solid #FFD700;
+            border-radius: 50px;
+            background: #1A3A5F;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 20px;
+            padding-right: 50px;
+        }
+
+        .class-dropdown:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background: #0f2a44;
+        }
+
+        .class-dropdown option {
+            background: white;
+            color: #333;
+            padding: 10px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .start-btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 24px;
+            padding: 16px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(145deg, #2ED573, #1E8449);
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 6px 0 #1A6B3A;
+            transition: all 0.15s ease;
+            width: 100%;
+            max-width: 350px;
+            letter-spacing: 2px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(46, 213, 115, 0.4);
+            filter: brightness(1.05);
+        }
+
+        .start-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1A6B3A;
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 6px 0 #1A6B3A;
+        }
+
+        .start-btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 6px 0 #1A6B3A;
+        }
+
         /* Tablet optimization */
         @media (min-width: 768px) and (max-width: 1200px) {
             .logo {
                 max-width: 80%;
-                max-height: 80%;
+                max-height: 50vh;
+            }
+            .container {
+                gap: 25px;
+            }
+            .class-dropdown {
+                font-size: 18px;
+                padding: 12px 22px;
+                padding-right: 45px;
+            }
+            .start-btn {
+                font-size: 22px;
+                padding: 14px 40px;
             }
         }
 
@@ -54,7 +175,10 @@
         @media (min-width: 1200px) {
             .logo {
                 max-width: 70%;
-                max-height: 80%;
+                max-height: 55vh;
+            }
+            .container {
+                gap: 30px;
             }
         }
 
@@ -62,14 +186,157 @@
         @media (max-width: 767px) {
             .logo {
                 max-width: 95%;
-                max-height: 85%;
+                max-height: 45vh;
+            }
+            .container {
+                gap: 20px;
+                padding: 10px;
+            }
+            .controls {
+                max-width: 320px;
+            }
+            .class-dropdown {
+                font-size: 16px;
+                padding: 12px 18px;
+                padding-right: 40px;
+                max-width: 300px;
+            }
+            .start-btn {
+                font-size: 18px;
+                padding: 14px 30px;
+                max-width: 300px;
+            }
+        }
+
+        /* Landscape orientation on tablets/phones */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .logo {
+                max-height: 35vh;
+                max-width: 60%;
+            }
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px 30px;
+                padding: 10px 20px;
+            }
+            .logo-container {
+                flex: 0 0 auto;
+                max-width: 40%;
+            }
+            .controls {
+                flex: 0 0 auto;
+                max-width: 45%;
+                gap: 12px;
+            }
+            .class-dropdown {
+                font-size: 14px;
+                padding: 10px 16px;
+                padding-right: 35px;
+                max-width: 250px;
+            }
+            .start-btn {
+                font-size: 16px;
+                padding: 10px 25px;
+                max-width: 250px;
+            }
+        }
+
+        @media (max-height: 450px) and (orientation: landscape) {
+            .logo {
+                max-height: 25vh;
+            }
+            .class-dropdown {
+                font-size: 12px;
+                padding: 8px 14px;
+                padding-right: 30px;
+                max-width: 200px;
+            }
+            .start-btn {
+                font-size: 14px;
+                padding: 8px 20px;
+                max-width: 200px;
+            }
+            .controls {
+                gap: 8px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="Pattern Builder Logo.png" alt="Pattern Builder" class="logo">
+        <div class="logo-container">
+            <img src="Pattern Builder Logo.png" alt="Pattern Builder" class="logo">
+        </div>
+
+        <div class="controls">
+            <div class="class-selector">
+                <select id="classDropdown" class="class-dropdown">
+                    <option value="">-- Select Class --</option>
+                    <option value="2pm">2:00 PM Class</option>
+                    <option value="3pm">3:00 PM Class</option>
+                    <option value="4pm">4:00 PM Class</option>
+                    <option value="5pm">5:00 PM Class</option>
+                </select>
+            </div>
+
+            <button class="start-btn" id="startBtn" disabled>▶ Start</button>
+        </div>
     </div>
+
+    <script>
+        const classDropdown = document.getElementById('classDropdown');
+        const startBtn = document.getElementById('startBtn');
+
+        // Enable/disable start button based on selection
+        classDropdown.addEventListener('change', function() {
+            if (this.value) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        });
+
+        // Start button click handler
+        startBtn.addEventListener('click', function() {
+            const selectedClass = classDropdown.value;
+            
+            if (!selectedClass) {
+                alert('⚠️ Please select a class first!');
+                return;
+            }
+
+            // Store the selected class in localStorage
+            localStorage.setItem('megaScrambleClass', selectedClass);
+            
+            // For today: When 2pm is selected, load mode1.html
+            // Otherwise, show a message (or you can add mode2.html later)
+            if (selectedClass === '2pm') {
+                window.location.href = 'mode1.html';
+            } else {
+                // For other classes, you can either:
+                // 1. Load a different mode (mode2.html)
+                // 2. Show a coming soon message
+                alert(`📅 ${classDropdown.options[classDropdown.selectedIndex].text}\n\nThis class will be available soon!\n\nFor today, please select the 2:00 PM class.`);
+                // Reset selection
+                classDropdown.value = '';
+                startBtn.disabled = true;
+            }
+        });
+
+        // Restore previously selected class if exists (optional)
+        const savedClass = localStorage.getItem('megaScrambleClass');
+        if (savedClass) {
+            classDropdown.value = savedClass;
+            if (savedClass === '2pm') {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+                classDropdown.value = '';
+                localStorage.removeItem('megaScrambleClass');
+            }
+        }
+    </script>
 </body>
 </html>

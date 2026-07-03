@@ -21,20 +21,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 10px;
             overflow: auto;
         }
 
         .question-container {
             background: white;
             border-radius: 25px;
-            padding: 20px 25px;
-            max-width: 1000px;
-            width: 95%;
+            padding: 15px 20px;
+            max-width: 950px;
+            width: 98%;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             text-align: center;
-            margin: 20px auto;
-            max-height: 90vh;
+            margin: 10px auto;
+            max-height: 98vh;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -43,31 +43,31 @@
 
         .stage-title {
             font-family: 'Fredoka One', cursive;
-            font-size: 28px;
+            font-size: 24px;
             color: #1A3A5F;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             flex-shrink: 0;
             text-shadow: 2px 2px 0 #FFD700;
         }
 
         .sub-title {
             font-family: 'Noto Sans KR', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             color: #666;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             flex-shrink: 0;
         }
 
         .class-badge {
-            font-size: 14px;
+            font-size: 13px;
             color: #666;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             flex-shrink: 0;
             background: #f0f0f0;
             display: inline-block;
-            padding: 4px 20px;
+            padding: 3px 16px;
             border-radius: 50px;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         .class-badge span {
@@ -77,18 +77,18 @@
 
         .question-number {
             font-family: 'Fredoka One', cursive;
-            font-size: 18px;
+            font-size: 16px;
             color: #4ECDC4;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             flex-shrink: 0;
         }
 
         .word-cloud {
             background: linear-gradient(135deg, #1A3A5F, #2B4F7C);
-            border-radius: 18px;
-            padding: 30px 20px;
-            min-height: 300px;
-            margin-bottom: 15px;
+            border-radius: 16px;
+            padding: 20px 15px;
+            min-height: 150px;
+            margin-bottom: 10px;
             flex-shrink: 0;
             border: 2px solid #FFD700;
             display: flex;
@@ -101,7 +101,7 @@
         /* ===== LEGO BLOCK STYLES ===== */
         .word-block {
             font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             padding: 10px 18px;
             color: #1A1A1A;
@@ -114,24 +114,23 @@
             animation: floatIn 0.5s ease-out;
             animation-fill-mode: both;
             position: relative;
-            border-radius: 4px;
-            border-bottom: 6px solid rgba(0,0,0,0.25);
+            border-radius: 5px;
+            border-bottom: 7px solid rgba(0,0,0,0.25);
             box-shadow: 
                 inset 0 -4px 0 rgba(0,0,0,0.1),
                 0 4px 8px rgba(0,0,0,0.2);
-            min-width: 50px;
+            min-width: 55px;
             text-align: center;
         }
 
-        /* LEGO studs on top */
         .word-block::before {
             content: '';
             position: absolute;
-            top: -8px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 18px;
-            height: 9px;
+            width: 20px;
+            height: 10px;
             background: inherit;
             border-radius: 50% 50% 0 0;
             box-shadow: 
@@ -143,11 +142,11 @@
         .word-block::after {
             content: '';
             position: absolute;
-            top: -8px;
+            top: -10px;
             left: 30%;
             transform: translateX(-50%);
-            width: 18px;
-            height: 9px;
+            width: 20px;
+            height: 10px;
             background: inherit;
             border-radius: 50% 50% 0 0;
             box-shadow: 
@@ -181,125 +180,151 @@
             100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
         }
 
-        /* LEGO Colors - brighter, more toy-like */
-        .word-noun { 
-            background: #FF4757; 
-            border-bottom-color: #C0392B;
-        }
-        .word-verb { 
-            background: #2ED573; 
-            border-bottom-color: #1E8449;
-        }
-        .word-pronoun { 
-            background: #FFD93D; 
-            border-bottom-color: #D4A017;
-        }
-        .word-adjective { 
-            background: #1E90FF; 
-            border-bottom-color: #1565C0;
-        }
-        .word-adverb { 
-            background: #A66CFF; 
-            border-bottom-color: #7B2FBE;
-        }
-        .word-preposition { 
-            background: #FF8E53; 
-            border-bottom-color: #D35400;
-        }
-        .word-article { 
-            background: #F9A8D4; 
-            border-bottom-color: #C71585;
-        }
-        .word-conjunction { 
-            background: #00D2D3; 
-            border-bottom-color: #00838F;
-        }
-        .word-interjection { 
-            background: #FD79A8; 
-            border-bottom-color: #C2185B;
-        }
-        .word-other { 
-            background: #B0BEC5; 
-            border-bottom-color: #78909C;
+        /* ===== COLOR SCHEME ===== */
+        .color-subject { background: #FFD93D; border-bottom-color: #D4A017; }      /* Yellow - Subject */
+        .color-verb { background: #2ED573; border-bottom-color: #1E8449; }          /* Green - Verb */
+        .color-object { background: #FF4757; border-bottom-color: #C0392B; }        /* Red - Object */
+        .color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }        /* Purple - Adverb */
+        .color-preposition { background: #FF8E53; border-bottom-color: #D35400; }   /* Orange - Preposition */
+        .color-article { background: #F9A8D4; border-bottom-color: #C71585; }       /* Pink - Article */
+        .color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }     /* Blue - Adjective */
+        .color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }   /* Teal - Conjunction */
+        .color-other { background: #B0BEC5; border-bottom-color: #78909C; }         /* Grey - Other */
+
+        /* Answer blocks use SAME colors */
+        .answer-word-block {
+            font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            padding: 10px 18px;
+            color: #1A1A1A;
+            display: inline-block;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+            position: relative;
+            border-radius: 5px;
+            border-bottom: 7px solid rgba(0,0,0,0.25);
+            box-shadow: 
+                inset 0 -4px 0 rgba(0,0,0,0.1),
+                0 4px 8px rgba(0,0,0,0.2);
+            min-width: 55px;
+            text-align: center;
         }
 
-        .hint-text {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 10px;
-            flex-shrink: 0;
-            font-style: italic;
+        .answer-word-block::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            background: inherit;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                0 -2px 0 rgba(0,0,0,0.1);
+            filter: brightness(1.15);
         }
+
+        .answer-word-block::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 30%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            background: inherit;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                0 -2px 0 rgba(0,0,0,0.1);
+            filter: brightness(1.15);
+            display: none;
+        }
+
+        .answer-word-block.long-word::after {
+            display: block;
+        }
+
+        /* Answer blocks use SAME color classes */
+        .answer-word-block.color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
+        .answer-word-block.color-verb { background: #2ED573; border-bottom-color: #1E8449; }
+        .answer-word-block.color-object { background: #FF4757; border-bottom-color: #C0392B; }
+        .answer-word-block.color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }
+        .answer-word-block.color-preposition { background: #FF8E53; border-bottom-color: #D35400; }
+        .answer-word-block.color-article { background: #F9A8D4; border-bottom-color: #C71585; }
+        .answer-word-block.color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }
+        .answer-word-block.color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }
+        .answer-word-block.color-other { background: #B0BEC5; border-bottom-color: #78909C; }
 
         .answer-section {
             background: #f8f9fa;
-            border-radius: 18px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 16px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
             display: none;
             flex-shrink: 0;
-            border: 2px solid #4ECDC4;
+            border: 3px solid #4ECDC4;
         }
 
         .answer-label {
             font-family: 'Fredoka One', cursive;
-            font-size: 20px;
+            font-size: 18px;
             color: #4ECDC4;
             margin-bottom: 8px;
         }
 
-        .answer-text {
-            font-size: 24px;
-            color: #1A3A5F;
-            padding: 12px;
-            background: white;
-            border-radius: 12px;
-            border: 2px solid #4ECDC4;
-            word-wrap: break-word;
-            font-weight: bold;
-            font-family: 'Noto Sans KR', sans-serif;
+        .answer-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px 14px;
+            padding: 5px;
+            min-height: 60px;
         }
 
         .team-stats {
             display: flex;
             justify-content: center;
-            margin: 10px 0;
-            padding: 12px;
+            margin: 8px 0;
+            padding: 10px;
             background: linear-gradient(145deg, #FFD700, #FDB931);
-            border-radius: 18px;
+            border-radius: 16px;
             color: #1A3A5F;
             font-weight: bold;
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 20px;
             flex-shrink: 0;
         }
 
         .team-stat {
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
-            min-width: 120px;
+            min-width: 100px;
         }
 
-        .team-stat span { font-size: 24px; margin-right: 8px; }
+        .team-stat span { font-size: 20px; margin-right: 6px; }
         .team-stat input {
-            width: 60px;
-            padding: 5px;
-            font-size: 16px;
+            width: 50px;
+            padding: 4px;
+            font-size: 14px;
             text-align: center;
             font-family: 'Fredoka One', cursive;
             border: 2px solid #1A3A5F;
-            border-radius: 10px;
-            margin-left: 8px;
+            border-radius: 8px;
+            margin-left: 6px;
         }
 
         .controls {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 10px;
-            padding: 12px 0 5px 0;
+            margin-top: 8px;
+            padding: 10px 0 3px 0;
             background: white;
             border-top: 2px solid #f0f0f0;
             flex-shrink: 0;
@@ -307,8 +332,8 @@
 
         .control-btn {
             font-family: 'Fredoka One', cursive;
-            font-size: 18px;
-            padding: 10px 25px;
+            font-size: 16px;
+            padding: 8px 20px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -316,7 +341,7 @@
             text-transform: uppercase;
             box-shadow: 0 4px 0 rgba(0,0,0,0.2);
             transition: all 0.1s ease;
-            min-width: 120px;
+            min-width: 100px;
         }
 
         .control-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
@@ -339,10 +364,10 @@
 
         .modal-content {
             background: white;
-            padding: 35px;
+            padding: 30px;
             border-radius: 35px;
             text-align: center;
-            max-width: 450px;
+            max-width: 400px;
             width: 90%;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             animation: modalPop 0.5s ease-out;
@@ -354,14 +379,14 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .modal-icon { font-size: 60px; margin-bottom: 15px; }
-        .modal-content h2 { font-family: 'Fredoka One', cursive; font-size: 34px; color: #1A3A5F; margin-bottom: 15px; }
-        .modal-content p { font-size: 20px; margin-bottom: 25px; color: #333; }
+        .modal-icon { font-size: 50px; margin-bottom: 12px; }
+        .modal-content h2 { font-family: 'Fredoka One', cursive; font-size: 30px; color: #1A3A5F; margin-bottom: 12px; }
+        .modal-content p { font-size: 18px; margin-bottom: 20px; color: #333; }
 
         .modal-btn {
             font-family: 'Fredoka One', cursive;
-            font-size: 20px;
-            padding: 10px 35px;
+            font-size: 18px;
+            padding: 10px 30px;
             background: linear-gradient(145deg, #1A3A5F, #0F2A44);
             border: none;
             border-radius: 50px;
@@ -373,51 +398,121 @@
 
         .modal-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0A1A2F; }
 
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .stage-title { font-size: 22px; }
-            .word-block { 
-                font-size: 16px; 
-                padding: 8px 12px; 
+        @media (max-width: 900px) {
+            .word-block, .answer-word-block {
+                font-size: 18px;
+                padding: 8px 14px;
+                min-width: 45px;
+                border-bottom-width: 6px;
+            }
+            .word-block::before, .answer-word-block::before {
+                width: 16px;
+                height: 8px;
+                top: -8px;
+            }
+            .word-block::after, .answer-word-block::after {
+                width: 16px;
+                height: 8px;
+                top: -8px;
+            }
+            .word-cloud {
+                padding: 15px 12px;
+                min-height: 120px;
+                gap: 10px 12px;
+            }
+            .answer-blocks {
+                gap: 8px 10px;
+                min-height: 45px;
+            }
+            .stage-title { font-size: 20px; }
+            .question-container {
+                padding: 12px 15px;
+                max-height: 95vh;
+            }
+            .team-stat { font-size: 14px; min-width: 80px; }
+            .team-stat span { font-size: 18px; }
+            .team-stat input { width: 45px; font-size: 13px; }
+            .control-btn { font-size: 14px; padding: 7px 16px; min-width: 80px; }
+        }
+
+        @media (max-width: 600px) {
+            .word-block, .answer-word-block {
+                font-size: 15px;
+                padding: 6px 10px;
+                min-width: 35px;
+                border-bottom-width: 5px;
+                border-radius: 4px;
+            }
+            .word-block::before, .answer-word-block::before {
+                width: 12px;
+                height: 6px;
+                top: -6px;
+            }
+            .word-block::after, .answer-word-block::after {
+                width: 12px;
+                height: 6px;
+                top: -6px;
+            }
+            .word-cloud {
+                padding: 12px 8px;
+                min-height: 100px;
+                gap: 8px 10px;
+            }
+            .answer-blocks {
+                gap: 6px 8px;
+                min-height: 35px;
+            }
+            .stage-title { font-size: 18px; }
+            .sub-title { font-size: 11px; }
+            .question-number { font-size: 14px; }
+            .question-container {
+                padding: 10px 12px;
+                max-height: 92vh;
+                border-radius: 18px;
+            }
+            .answer-label { font-size: 15px; }
+            .team-stats { gap: 12px; padding: 8px; }
+            .team-stat { font-size: 12px; min-width: 60px; }
+            .team-stat span { font-size: 15px; }
+            .team-stat input { width: 38px; font-size: 11px; padding: 3px; }
+            .controls { gap: 6px; padding: 8px 0 2px 0; }
+            .control-btn { font-size: 12px; padding: 6px 12px; min-width: 60px; }
+            .answer-section { padding: 8px 10px; }
+        }
+
+        @media (max-height: 700px) {
+            .word-cloud {
+                min-height: 80px;
+                padding: 12px 10px;
+            }
+            .word-block, .answer-word-block {
+                font-size: 16px;
+                padding: 6px 12px;
                 min-width: 40px;
                 border-bottom-width: 5px;
             }
-            .word-block::before {
+            .word-block::before, .answer-word-block::before {
                 width: 14px;
                 height: 7px;
-                top: -6px;
+                top: -7px;
             }
-            .word-block::after {
+            .word-block::after, .answer-word-block::after {
                 width: 14px;
                 height: 7px;
-                top: -6px;
+                top: -7px;
             }
-            .word-cloud { gap: 10px 12px; padding: 20px 10px; min-height: 200px; }
-            .answer-text { font-size: 18px; }
-            .control-btn { font-size: 14px; padding: 8px 16px; min-width: 100px; }
-            .team-stat { font-size: 14px; }
-            .team-stat span { font-size: 20px; }
-            .team-stat input { width: 50px; font-size: 14px; }
-        }
-
-        @media (max-width: 480px) {
-            .word-block { 
-                font-size: 14px; 
-                padding: 6px 10px; 
-                min-width: 35px;
-                border-bottom-width: 4px;
+            .answer-blocks {
+                min-height: 30px;
+                gap: 6px 8px;
             }
-            .word-block::before {
-                width: 12px;
-                height: 6px;
-                top: -5px;
+            .stage-title { font-size: 18px; }
+            .question-container {
+                padding: 8px 12px;
+                max-height: 98vh;
             }
-            .word-block::after {
-                width: 12px;
-                height: 6px;
-                top: -5px;
-            }
-            .word-cloud { gap: 8px 10px; padding: 15px 8px; }
+            .team-stats { padding: 6px; margin: 4px 0; }
+            .controls { padding: 6px 0 2px 0; margin-top: 4px; }
+            .answer-section { padding: 6px 10px; }
         }
     </style>
 </head>
@@ -430,8 +525,6 @@
 
     <div class="question-number" id="questionNumber"></div>
 
-    <div class="hint-text">💡 Arrange the Korean word blocks to form the English sentence!</div>
-
     <!-- WORD CLOUD - LEGO blocks with Korean words -->
     <div class="word-cloud" id="wordCloud"></div>
 
@@ -442,7 +535,7 @@
 
     <div class="answer-section" id="answerSection">
         <div class="answer-label">✓ CORRECT ENGLISH SENTENCE</div>
-        <div class="answer-text" id="answerText"></div>
+        <div class="answer-blocks" id="answerBlocks"></div>
     </div>
 
     <div class="controls">
@@ -471,89 +564,234 @@
 </div>
 
 <script>
-// 10 Sample questions: Korean words → English sentences
-// Each Korean sentence is split into individual words with spaces
+// ===== 9 SENTENCES FROM 2PM WEDNESDAY WORKSHEET (A2) =====
+// YELLOW = Subject, GREEN = Verb, RED = Object, WHITE = Everything else
 const SAMPLE_QUESTIONS = [
     { 
-        scrambled: "저는 학교에 갑니다", 
-        correct: "I go to school" 
+        scrambled: "나는 밖에서 놀 거야", 
+        correct: "I'm going to play outside",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '놀': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'play': 'color-verb',
+            'outside': 'color-other'
+        }
     },
     { 
-        scrambled: "그녀는 책을 읽습니다", 
-        correct: "She reads a book" 
+        scrambled: "나는 친구들을 만날 거야", 
+        correct: "I'm going to meet my friends",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '친구들을': 'color-adjective',
+            '만날': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'meet': 'color-verb',
+            'my': 'color-other',
+            'friends': 'color-adjective'
+        }
     },
     { 
-        scrambled: "우리는 축구를 합니다", 
-        correct: "We play soccer" 
+        scrambled: "나는 더 열심히 공부할 거야", 
+        correct: "I'm going to study harder",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '공부할': 'color-verb',
+            '거야': 'color-verb',
+            '더': 'color-other',
+            '열심히': 'color-other',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'study': 'color-verb',
+            'harder': 'color-other'
+        }
     },
     { 
-        scrambled: "그는 피자를 좋아합니다", 
-        correct: "He likes pizza" 
+        scrambled: "나는 할머니, 할아버지를 방문할 거야", 
+        correct: "I'm going to visit my grandparents",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '할머니': 'color-adjective',
+            '할아버지를': 'color-adjective',
+            '방문할': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'visit': 'color-verb',
+            'my': 'color-other',
+            'grandparents': 'color-adjective'
+        }
     },
     { 
-        scrambled: "고양이가 잠을 잡니다", 
-        correct: "The cat sleeps" 
+        scrambled: "나는 샤워할 거야", 
+        correct: "I'm going to take a shower",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '샤워할': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'take': 'color-verb',
+            'a': 'color-other',
+            'shower': 'color-verb'
+        }
     },
     { 
-        scrambled: "나는 사과를 먹습니다", 
-        correct: "I eat an apple" 
+        scrambled: "나는 창가에 앉을 거야", 
+        correct: "I'm going to sit by the window",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '창가에': 'color-other',
+            '앉을': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'sit': 'color-verb',
+            'by': 'color-other',
+            'the': 'color-other',
+            'window': 'color-other'
+        }
     },
     { 
-        scrambled: "그녀는 노래를 부릅니다", 
-        correct: "She sings a song" 
+        scrambled: "나는 가족과 외식할 거야", 
+        correct: "I'm going to eat out with my family",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '가족과': 'color-other',
+            '외식할': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'eat': 'color-verb',
+            'out': 'color-other',
+            'with': 'color-other',
+            'my': 'color-other',
+            'family': 'color-other'
+        }
     },
     { 
-        scrambled: "우리는 영화를 봅니다", 
-        correct: "We watch a movie" 
+        scrambled: "나는 수영하는 것을 배울 거야", 
+        correct: "I'm going to learn to swim",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '수영하는': 'color-adjective',
+            '것을': 'color-adjective',
+            '배울': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-other',
+            'learn': 'color-verb',
+            'swim': 'color-adjective'
+        }
     },
     { 
-        scrambled: "그는 물을 마십니다", 
-        correct: "He drinks water" 
-    },
-    { 
-        scrambled: "아이들이 놀고 있습니다", 
-        correct: "The children are playing" 
+        scrambled: "나는 내년에 4학년이 될 거야", 
+        correct: "I'm going to be in fourth grade next year",
+        colorMap: {
+            // Korean
+            '나는': 'color-subject',
+            '내년에': 'color-other',
+            '4학년이': 'color-adjective',
+            '될': 'color-verb',
+            '거야': 'color-verb',
+            // English
+            "i'm": 'color-subject',
+            'going': 'color-verb',
+            'to': 'color-verb',
+            'be': 'color-verb',
+            'in': 'color-other',
+            'fourth': 'color-adjective',
+            'grade': 'color-adjective',
+            'next': 'color-other',
+            'year': 'color-other'
+        }
     }
 ];
 
-// Part of speech mapper for Korean words
-function getWordClass(word) {
-    const w = word.trim();
-    if (!w) return 'word-other';
-
-    // Korean pronouns
-    const pronouns = ['저는','나는','그녀는','그는','우리는','내가','우리','그들','그녀','그','나','너'];
-    if (pronouns.some(p => w === p)) return 'word-pronoun';
-
-    // Korean particles (markers)
-    const particles = ['은','는','이','가','을','를','에','에게','으로','에서','까지','부터','와','과'];
-    if (particles.some(p => w === p || w.endsWith(p))) {
-        // Check if it's just a particle or part of a word
-        if (w.length <= 2 && particles.some(p => w === p)) return 'word-preposition';
+// ===== COLOR MAPPING FUNCTION =====
+// Each word gets a color based on its grammatical role
+// Korean and English words with the SAME role get the SAME color!
+function getWordColor(word, isKorean = true) {
+    const w = word.toLowerCase().trim();
+    
+    // ----- SUBJECT (Yellow) -----
+    const koreanSubjects = ['나는', '저는', '그는', '그녀는', '우리는', '내가', '제가', '네가', '우리가'];
+    const englishSubjects = ['i', "i'm", 'you', 'he', 'she', 'it', 'we', 'they'];
+    if (koreanSubjects.includes(w) || englishSubjects.includes(w)) {
+        return 'color-subject';
     }
-
-    // Korean prepositions/particles
-    const preps = ['에','에게','으로','에서','까지','부터','와','과'];
-    if (preps.some(p => w === p)) return 'word-preposition';
-
-    // Korean conjunctions
-    const conj = ['그리고','하지만','그래서','또는','때문에','만약','언제','동안'];
-    if (conj.some(c => w === c)) return 'word-conjunction';
-
-    // Korean adverbs
-    const adverbs = ['매우','정말','아주','거의','항상','자주','가끔','벌써','아직','또한','잘','빨리','천천히','조심히','갑자기','드디어','이제','오늘','내일','어제','여기','저기'];
-    if (adverbs.some(a => w === a)) return 'word-adverb';
-
-    // Korean adjectives
-    const adjectives = ['좋은','나쁜','새로운','오래된','큰','작은','긴','짧은','높은','낮은','아름다운','멋진','친절한','똑똑한','재미있는','행복한','슬픈','화난','피곤한','배고픈','무서운','용감한','게으른','바쁜','쉬운','어려운','딱딱한','부드러운','따뜻한','시원한','더운','추운','젖은','마른','깨끗한','더러운','빠른','느린','이른','늦은','맞는','틀린'];
-    if (adjectives.some(a => w === a || w.endsWith(a))) return 'word-adjective';
-
-    // Korean verbs (basic forms and conjugated forms)
-    const verbs = ['갑니다','읽습니다','합니다','좋아합니다','먹습니다','잡니다','부릅니다','봅니다','마십니다','놀고','있습니다','됩니다','옵니다','삽니다','만듭니다','압니다','말합니다','듣습니다','씁니다','일합니다','운동합니다','공부합니다','노래합니다','춤춥니다','요리합니다','청소합니다','씻습니다','입습니다','신습니다','벗습니다','가다','읽다','하다','좋아하다','먹다','자다','부르다','보다','마시다','놀다','있다','되다','오다','살다','만들다','알다','말하다','듣다','쓰다','일하다','운동하다','공부하다','노래하다','춤추다','요리하다','청소하다','씻다','입다','신다','벗다'];
-    if (verbs.some(v => w === v || w.endsWith(v) || v.endsWith(w))) return 'word-verb';
-
-    // If nothing matched -> noun
-    return 'word-noun';
+    
+    // ----- PREPOSITION (Orange) ===== "to" goes here, not verb
+    const koreanPreps = ['창가에', '가족과', '에게', '에', '와', '와는', '로', '부터', '까지', '밖에서'];
+    const englishPreps = ['by', 'with', 'in', 'to', 'at', 'on', 'for', 'from', 'of', 'out', 'outside'];
+    if (koreanPreps.includes(w) || englishPreps.includes(w)) {
+        return 'color-preposition';
+    }
+    
+    // ----- OBJECT (Red) ===== CHECK BEFORE VERBS so compound words like "샤워할" match "샤워" first
+    const koreanObjects = ['친구들을', '친구들', '할머니', '할아버지를', '수영하는', '것을', '4학년이', '4학년', '샤워'];
+    const englishObjects = ['friends', 'grandparents', 'shower', 'window', 'family', 'swim', 'fourth', 'grade'];
+    if (koreanObjects.some(o => w === o || w.includes(o)) || englishObjects.some(o => w === o)) {
+        return 'color-adjective';
+    }
+    
+    // ----- VERB (Green) -----
+    const koreanVerbs = ['놀', '만날', '공부할', '방문할', '샤워할', '앉을', '외식할', '배울', '될', '거야', '갑니다', '읽습니다', '합니다', '먹습니다', '잡니다', '봅니다', '마십니다', '간다', '한다'];
+    const englishVerbs = ['go', 'going', 'play', 'meet', 'study', 'visit', 'take', 'sit', 'eat', 'learn', 'swim', 'be', 'being'];
+    if (koreanVerbs.some(v => w === v || w.includes(v)) || englishVerbs.includes(w)) {
+        return 'color-verb';
+    }
+    
+    // ----- ADVERB (Purple) -----
+    const koreanAdverbs = ['더', '열심히', '내년에', '다음', '내년', '년'];
+    const englishAdverbs = ['harder', 'next', 'year'];
+    if (koreanAdverbs.includes(w) || englishAdverbs.includes(w)) {
+        return 'color-adverb';
+    }
+    
+    // ----- ARTICLE (Pink) -----
+    const englishArticles = ['a', 'an', 'the'];
+    if (englishArticles.includes(w)) {
+        return 'color-article';
+    }
+    
+    // ----- ADJECTIVE (Blue) -----
+    const koreanAdjectives = ['새로운', '큰', '작은', '예쁜', '못생긴', '좋은', '나쁜'];
+    const englishAdjectives = ['my', 'your', 'his', 'her', 'their', 'new', 'big', 'small', 'good', 'bad', 'pretty', 'ugly'];
+    if (koreanAdjectives.includes(w) || englishAdjectives.includes(w)) {
+        return 'color-adjective';
+    }
+    
+    // Default
+    return 'color-other';
 }
 
 // Shuffle array
@@ -565,25 +803,43 @@ function shuffleArray(array) {
     return array;
 }
 
-// Render word cloud with LEGO blocks
-function renderWordCloud(sentence) {
-    // Split by spaces to get individual Korean words
+// Render Korean word cloud
+function renderWordCloud(sentence, colorMap) {
     const words = sentence.split(/\s+/).filter(w => w.length > 0);
     const container = $('#wordCloud');
     container.empty();
     
-    // Randomize order for scatter effect
     const shuffledWords = shuffleArray([...words]);
     
     shuffledWords.forEach((word, index) => {
-        const cls = getWordClass(word);
+        const colorClass = colorMap && colorMap[word.toLowerCase()] ? colorMap[word.toLowerCase()] : 'color-other';
         const block = $('<span class="word-block"></span>')
-            .addClass(cls)
+            .addClass(colorClass)
             .text(word)
             .css('animation-delay', (index * 0.06) + 's');
         
-        // Add long-word class for words with 3+ characters (gives them 2 studs)
         if (word.length >= 3) {
+            block.addClass('long-word');
+        }
+        
+        container.append(block);
+    });
+}
+
+// Render English answer with matching colors
+function renderAnswer(sentence, colorMap) {
+    const words = sentence.split(/\s+/).filter(w => w.length > 0);
+    const container = $('#answerBlocks');
+    container.empty();
+    
+    words.forEach((word, index) => {
+        const colorClass = colorMap && colorMap[word.toLowerCase()] ? colorMap[word.toLowerCase()] : 'color-other';
+        const block = $('<span class="answer-word-block"></span>')
+            .addClass(colorClass)
+            .text(word)
+            .css('animation-delay', (index * 0.06) + 's');
+        
+        if (word.length >= 6) {
             block.addClass('long-word');
         }
         
@@ -611,8 +867,8 @@ function showQuestion() {
 
     const q = questions[currentIndex];
     $('#questionNumber').text(`Question ${currentIndex + 1} of ${questions.length}`);
-    renderWordCloud(q.scrambled);
-    $('#answerText').text(q.correct);
+    renderWordCloud(q.scrambled, q.colorMap);
+    renderAnswer(q.correct, q.colorMap);
 
     $('#answerSection').hide();
     $('#showAnswerBtn').removeClass('hidden');
