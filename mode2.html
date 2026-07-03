@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -606,7 +605,7 @@
 <div class="question-container">
     <h1 class="stage-title">👑 ROUND 2: ULTIMATE BATTLE</h1>
     <div class="sub-title">🇰🇷 Korean Words → English Sentences</div>
-    <div class="class-badge" id="classDisplay">Loading class...</div>
+    <div class="class-badge" id="classDisplay">Class: <span>2:00 PM Class (A1)</span></div>
 
     <div class="question-number" id="questionNumber"></div>
 
@@ -640,7 +639,7 @@
 </div>
 
 <script>
-// ===== 9 SENTENCES =====
+// ===== 9 SENTENCES FROM 2PM CLASS (Same as mode1.html) =====
 const SAMPLE_QUESTIONS = [
     { 
         scrambled: "나는 밖에서 놀 거야", 
@@ -883,26 +882,7 @@ let currentIndex = 0;
 let gameActive = true;
 
 $(document).ready(function () {
-    const selectedClass = localStorage.getItem('megaScrambleClass');
-    const selectedCSV = localStorage.getItem('megaScrambleCSV');
-    
-    if (!selectedClass || !selectedCSV) {
-        alert('⚠️ No class selected. Please go back and select a class.');
-        window.location.href = 'index.html';
-        return;
-    }
-    
-    const classNames = {
-        '2pm': '2:00 PM Class (A1)',
-        '3pm': '3:00 PM Class (A1)',
-        '4pm': '4:00 PM Class (High A2)',
-        '5pm': '5:00 PM Class (Pre A1)'
-    };
-    
-    const displayName = classNames[selectedClass] || selectedClass.toUpperCase();
-    $('#classDisplay').html(`Class: <span>${displayName}</span>`);
-    
-    // Use sample questions directly
+    // Use sample questions directly - no CSV needed
     questions = shuffleArray([...SAMPLE_QUESTIONS]);
     console.log('Questions loaded. Total:', questions.length);
     showQuestion();
