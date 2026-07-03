@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Winner - Pattern Builder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Bubblegum Sans', cursive;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.winner-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.winner-logo {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    display: block;
+    cursor: pointer;
+    animation: spinVertical 3s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spinVertical {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+.winners-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin: 25px 0 20px 0;
+}
+
+.winner-card {
+    background: linear-gradient(145deg, #FFD700, #FDB931);
+    border-radius: 60px;
+    padding: 20px 40px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    min-width: 250px;
+    animation: popIn 0.5s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.winner-card h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 48px;
+    color: #1A3A5F;
+    margin-bottom: 10px;
+}
+
+.winner-card p {
+    font-size: 24px;
+    color: #c62828;
+    font-weight: bold;
+}
+
+.champion-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 42px;
+    color: #1A3A5F;
+    background: linear-gradient(135deg, #FFD700, #FDB931);
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 60px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.home-btn {
+    margin-top: 30px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    padding: 14px 35px;
+    background: linear-gradient(145deg, #4ECDC4, #44A08D);
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.home-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+}
+
+.firework {
+    position: fixed;
+    top: -40px;
+    font-size: 28px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 100;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: modalPop 0.4s ease-out;
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.modal-content h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 32px;
+    color: #FF6B6B;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.modal-btn {
+    font-family: 'Fredoka One', cursive;
+    font-size: 20px;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    min-width: 120px;
+}
+
+.modal-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.btn-yes {
+    background: linear-gradient(145deg, #4ECDC4, #44A08D);
+}
+
+.btn-no {
+    background: linear-gradient(145deg, #FF6B6B, #EE5A6F);
+}
+
+@media (max-width: 768px) {
+    .winner-logo { max-width: 350px; }
+    .home-btn { font-size: 18px; padding: 12px 30px; margin-top: 25px; }
+    .winner-card { padding: 15px 25px; min-width: 200px; }
+    .winner-card h2 { font-size: 32px; }
+    .winner-card p { font-size: 18px; }
+    .champion-title { font-size: 28px; }
+    .firework { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+    .winner-logo { max-width: 280px; }
+    .home-btn { font-size: 16px; padding: 10px 25px; margin-top: 20px; }
+    .winner-card { padding: 12px 20px; min-width: 180px; }
+    .winner-card h2 { font-size: 26px; }
+    .winner-card p { font-size: 16px; }
+    .champion-title { font-size: 22px; }
+    .firework { font-size: 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="winner-wrapper">
+    <img src="winner.png" alt="Winner Logo" class="winner-logo" id="winnerLogo">
+    
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</div>
+
+<div class="modal-overlay" id="restartModal">
+    <div class="modal-content">
+        <div class="modal-icon">🏆</div>
+        <h2>Play Again?</h2>
+        <p>Do you want to return to the main menu and start a new game?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn btn-yes" id="yesBtn">Yes</button>
+            <button class="modal-btn btn-no" id="noBtn">No</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const fireworks = ['✨','🎆','🎇','💥','⭐','🌟','💫','⚡','🔥','🎉','🎊','🏆','👑','🎈','🥇','🎖️'];
+let fireworkInterval;
+
+function launchFirework() {
+    const fw = document.createElement('div');
+    fw.className = 'firework';
+    fw.textContent = fireworks[Math.floor(Math.random() * fireworks.length)];
+    fw.style.left = Math.random() * 100 + 'vw';
+    fw.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';
+    document.body.appendChild(fw);
+    setTimeout(() => fw.remove(), 4000);
+}
+
+function startFireworks() {
+    if (fireworkInterval) clearInterval(fireworkInterval);
+    fireworkInterval = setInterval(launchFirework, 180);
+}
+
+startFireworks();
+
+const winnerLogo = document.getElementById('winnerLogo');
+const restartModal = document.getElementById('restartModal');
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+
+// Clear any leftover winner data when returning to main menu
+yesBtn.addEventListener('click', function() {
+    localStorage.removeItem('megaScrambleWinners');
+    localStorage.removeItem('megaScrambleWinner');
+    localStorage.removeItem('megaScrambleGameEnded');
+    window.location.href = 'index.html';
+});
+
+noBtn.addEventListener('click', function() {
+    restartModal.style.display = 'none';
+    winnerLogo.style.animationPlayState = 'running';
+});
+
+winnerLogo.addEventListener('click', function() {
+    winnerLogo.style.animationPlayState = 'paused';
+    restartModal.style.display = 'flex';
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target === restartModal) {
+        restartModal.style.display = 'none';
+        winnerLogo.style.animationPlayState = 'running';
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && restartModal.style.display === 'flex') {
+        restartModal.style.display = 'none';
+        winnerLogo.style.animationPlayState = 'running';
+    }
+});
+
+window.addEventListener('beforeunload', function() {
+    if (fireworkInterval) {
+        clearInterval(fireworkInterval);
+    }
+});
+</script>
+
+</body>
+</html>
