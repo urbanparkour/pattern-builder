@@ -13,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <style>
-        /* Same styles as before - keeping it compact */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Noto Sans KR', 'Bubblegum Sans', cursive, sans-serif; background: linear-gradient(135deg, #1A3A5F, #0F2A44); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 10px; overflow: auto; }
         .timer-container { position: fixed; top: 0; left: 0; width: 100%; height: 12px; background: rgba(0,0,0,0.15); z-index: 1000; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
@@ -71,10 +70,11 @@
         .team-stat span { font-size: 20px; margin-right: 6px; }
         .team-stat input { width: 50px; padding: 4px; font-size: 14px; text-align: center; font-family: 'Fredoka One', cursive; border: 2px solid #1A3A5F; border-radius: 8px; margin-left: 6px; }
         .controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 8px; padding: 10px 0 3px 0; background: white; border-top: 2px solid #f0f0f0; flex-shrink: 0; }
-        .control-btn { font-family: 'Fredoka One', cursive; font-size: 16px; padding: 8px 20px; border: none; border-radius: 50px; cursor: pointer; color: white; text-transform: uppercase; box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: all 0.1s ease; min-width: 100px; }
+        .control-btn { font-family: 'Fredoka One', cursive; font-size: 16px; padding: 8px 20px; border: none; border-radius: 50px; cursor: pointer; color: white; text-transform: uppercase; box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: all 0.1s ease; min-width: 100px; text-decoration: none; display: inline-block; line-height: 1.4; }
         .control-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
         .btn-show { background: #4ECDC4; box-shadow: 0 4px 0 #2A8F87; }
         .btn-next { background: #FFD700; color: #333; box-shadow: 0 4px 0 #C4A000; }
+        .btn-finish { background: #FF6B6B; box-shadow: 0 4px 0 #C0392B; }
         .btn-home { background: #95a5a6; box-shadow: 0 4px 0 #6C7A7D; }
         .hidden { display: none !important; }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
@@ -120,33 +120,40 @@
 
     <div class="controls">
         <button class="control-btn btn-show" id="showAnswerBtn">Show Answer</button>
- btn-next hidden" id="nextBtn">Next ➜</button>
-        <button class="control-btn" id="finishBtn" style="background:#FF6B6B; box-shadow:0 4px 0 #C0392B; display:none;">🏆 Finish</button>
-        <a href="index.html" class="control-btn" id="homeBtn" style="background:#95A5A6; box-shadow:0 4px 0 #6C7A7B; text-decoration:none; display:inline-block; line-height:1.4;">🏠 Home</a>
+        <button class="control-btn btn-next hidden" id="nextBtn">Next ➜</button>
+        <button class="control-btn btn-finish hidden" id="finishBtn">🏆 Finish</button>
+        <a href="index.html" class="control-btn btn-home">🏠 Home</a>
+    </div>
+</div>
+
+<div class="modal-overlay" id="timesUpModal">
+    <div class="modal-content">
+        <div class="modal-icon">⏰</div>
+        <h2>TIME'S UP!</h2>
+        <p>The team battle has ended</p>
+        <button class="modal-btn" id="modalOkBtn">OK</button>
     </div>
 </div>
 
 <script>
 /* ============================================================
    PATTERN BUILDER — MODE 1 (TEAM ROUND)
-   Loads the class CSV chosen on index.html and auto-colors words.
-   Yellow = Subject | Green = Verb | Blue = Object | White = other
    ============================================================ */
 
-/* ---------- CLASS + CSV RESOLUTION ---------- */
 const CLASS_LABELS = {
     '2pm': '2:00 PM Class (A1)',
     '3pm': '3:00 PM Class (A2)',
     '4pm': '4:00 PM Class (B1)',
     '5pm': '5:00 PM Class (Low A1)'
 };
+
 const selectedClass = localStorage.getItem('megaScrambleClass') || '2pm';
 const csvFile = localStorage.getItem('megaScrambleCSV') || (selectedClass + '.csv');
 $('#classDisplay').html('Class: <span>' + (CLASS_LABELS[selectedClass] || selectedClass) + '</span>');
 
-/* ---------- AUTO-COLOR DICTIONARIES ---------- */
+// ----- AUTO-COLOR DICTIONARIES -----
 const KR_SUBJ = ['나는','저는','너는','그는','그녀는','우리는','내가','제가','네가','우리가','우리'];
-const KR_AUX  = ['거야','거니','거예요','거야?','거니?','것','거','래']; // trailing helpers to skip when finding verb
+const KR_AUX  = ['거야','거니','거예요','거야?','거니?','것','거','래'];
 
 const EN_SUBJ = new Set(['i',"i'm",'im','you','he','she','it','we','they']);
 const EN_VERB = new Set([
@@ -156,7 +163,7 @@ const EN_VERB = new Set([
     'forgot','feel','feeling','take','learn','save','solve','answer','start','sleep',
     'practice','use','become','give','speak','share','work','be','is','are','am','was','were',
     'will','can','could','should','think','have','has','ride','not','trying','won','won\'t',
-    'don','doesn','can\'t','isn','ready'
+    'don','doesn','can\'t','isn','ready','going'
 ]);
 const EN_OBJ = new Set([
     'homework','bike','mom','soccer','book','books','letter','cake','room','weekend',
@@ -165,30 +172,23 @@ const EN_OBJ = new Set([
     'water','phone','mistakes','best','language','money','question','questions','ideas',
     'team','person','presentation','grandparents','parents','something','bed','cat','cats',
     'ball','pencil','doll','hat','sister','brother','music','ice','cream','picture','shower',
-    'window','family','swim','grade'
+    'window','family','swim','grade','outside','coffee','letter','picture','korean','bike','shopping'
 ]);
 
 function stripP(w){ return (w || '').replace(/[.,!?;:'"’()]/g,'').trim(); }
 
-/* Build a {word: colorClass} map for one Korean+English pair (best-effort). */
 function autoColorMap(korean, english){
     const map = {};
-
-    // ----- KOREAN -----
     const kw = korean.split(/\s+/).map(stripP).filter(Boolean);
     let verbIdx = kw.length - 1;
-    // Skip trailing auxiliaries to find the real verb
     while (verbIdx > 0 && KR_AUX.includes(kw[verbIdx])) verbIdx--;
     kw.forEach((w, i) => {
         let cls = 'color-white';
         if (KR_SUBJ.includes(w)) cls = 'color-subject';
         else if (i === verbIdx) cls = 'color-verb';
-        else if (/를$/.test(w)) cls = 'color-adjective';                       // object (blue)
-        else if (/을$/.test(w) && !KR_AUX.includes(kw[i+1] || '')) cls = 'color-adjective';
+        else if (/를$/.test(w) || /을$/.test(w)) cls = 'color-adjective';
         map[w] = cls;
     });
-
-    // ----- ENGLISH -----
     const ew = english.split(/\s+/).map(w => stripP(w).toLowerCase()).filter(Boolean);
     ew.forEach(w => {
         let cls = 'color-white';
@@ -197,11 +197,9 @@ function autoColorMap(korean, english){
         else if (EN_OBJ.has(w)) cls = 'color-adjective';
         map[w] = cls;
     });
-
     return map;
 }
 
-/* ---------- SHUFFLE ---------- */
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -210,15 +208,13 @@ function shuffleArray(array) {
     return array;
 }
 
-/* ---------- RENDERERS ---------- */
 function renderWordCloud(sentence, colorMap) {
     const words = sentence.split(/\s+/).filter(w => w.length > 0);
     const container = $('#wordCloud');
     container.empty();
     shuffleArray([...words]).forEach((word, index) => {
-        const key = stripP(word).toLowerCase();
-        const krKey = stripP(word);
-        const colorClass = (colorMap && (colorMap[krKey] || colorMap[key])) || 'color-white';
+        const key = stripP(word);
+        const colorClass = (colorMap && (colorMap[key] || colorMap[key.toLowerCase()])) || 'color-white';
         const block = $('<span class="word-block"></span>')
             .addClass(colorClass)
             .text(word)
@@ -244,12 +240,44 @@ function renderAnswer(sentence, colorMap) {
     });
 }
 
-/* ---------- GAME STATE ---------- */
+// ----- GAME STATE -----
 let questions = [];
 let currentIndex = 0;
+let timerInterval;
+let timeRemaining = 900;
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeRemaining / 60);
+    const s = timeRemaining % 60;
+    const d = $('#timerDisplay');
+    d.text(String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'));
+    if (timeRemaining <= 30) {
+        d.addClass('warning');
+        $('#timerBar').addClass('warning');
+    } else {
+        d.removeClass('warning');
+        $('#timerBar').removeClass('warning');
+    }
+}
+
+function startTimer() {
+    updateTimerDisplay();
+    timerInterval = setInterval(function(){
+        timeRemaining--;
+        updateTimerDisplay();
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            $('#timesUpModal').fadeIn(300).css('display', 'flex');
+            $('#timerBar').css('animation-play-state', 'paused');
+        }
+    }, 1000);
+}
 
 function showQuestion() {
-    if (currentIndex >= questions.length) { endGame(); return; }
+    if (currentIndex >= questions.length) {
+        endGame();
+        return;
+    }
     const q = questions[currentIndex];
     $('#questionNumber').text('Question ' + (currentIndex + 1) + ' of ' + questions.length);
     renderWordCloud(q.scrambled, q.colorMap);
@@ -257,25 +285,8 @@ function showQuestion() {
     $('#answerSection').hide();
     $('#showAnswerBtn').removeClass('hidden').show();
     $('#nextBtn').addClass('hidden');
-    $('#finishBtn').hide();
+    $('#finishBtn').addClass('hidden');
 }
-
-$('#showAnswerBtn').on('click', function(){
-    $('#answerSection').show();
-    $(this).addClass('hidden');
-    if (currentIndex >= questions.length - 1) {
-        $('#finishBtn').show();
-    } else {
-        $('#nextBtn').removeClass('hidden');
-    }
-});
-
-$('#nextBtn').on('click', function(){
-    currentIndex++;
-    showQuestion();
-});
-
-$('#finishBtn').on('click', endGame);
 
 function endGame() {
     clearInterval(timerInterval);
@@ -290,26 +301,29 @@ function endGame() {
     window.location.href = 'winner.html';
 }
 
-/* ---------- TIMER (15 min) ---------- */
-let timerInterval;
-let timeRemaining = 900;
-function updateTimerDisplay() {
-    const m = Math.floor(timeRemaining / 60);
-    const s = timeRemaining % 60;
-    const d = $('#timerDisplay');
-    d.text(String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'));
-    if (timeRemaining <= 30) d.css('color', '#FF4757'); else d.css('color', '');
-}
-function startTimer() {
-    updateTimerDisplay();
-    timerInterval = setInterval(function(){
-        timeRemaining--;
-        updateTimerDisplay();
-        if (timeRemaining <= 0) { clearInterval(timerInterval); endGame(); }
-    }, 1000);
-}
+$('#showAnswerBtn').on('click', function(){
+    $('#answerSection').show();
+    $(this).addClass('hidden');
+    if (currentIndex >= questions.length - 1) {
+        $('#finishBtn').removeClass('hidden');
+    } else {
+        $('#nextBtn').removeClass('hidden');
+    }
+});
 
-/* ---------- LOAD CSV THEN START ---------- */
+$('#nextBtn').on('click', function(){
+    currentIndex++;
+    showQuestion();
+});
+
+$('#finishBtn').on('click', endGame);
+
+$('#modalOkBtn').on('click', function() {
+    $('#timesUpModal').hide();
+    endGame();
+});
+
+// ----- LOAD CSV -----
 $(document).ready(function () {
     Papa.parse(csvFile, {
         download: true,
@@ -327,7 +341,6 @@ $(document).ready(function () {
                 const en = r['Answer'].trim();
                 return { scrambled: kr, correct: en, colorMap: autoColorMap(kr, en) };
             }));
-            currentIndex = 0;
             showQuestion();
             startTimer();
         },
