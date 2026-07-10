@@ -175,140 +175,30 @@
             box-shadow: 0 8px 16px rgba(108, 92, 231, 0.4), 0 6px 0 #341F97;
         }
 
-        /* Tablet optimization */
-        @media (min-width: 768px) and (max-width: 1200px) {
-            .logo {
-                max-width: 80%;
-                max-height: 45vh;
-            }
-            .container {
-                gap: 20px;
-            }
-            .class-dropdown {
-                font-size: 18px;
-                padding: 12px 22px;
-                padding-right: 45px;
-            }
-            .start-btn {
-                font-size: 18px;
-                padding: 14px 20px;
-                min-width: 140px;
-            }
+        @media (max-width: 768px) {
+            .logo { max-width: 80%; max-height: 45vh; }
+            .container { gap: 20px; }
+            .class-dropdown { font-size: 18px; padding: 12px 22px; padding-right: 45px; }
+            .start-btn { font-size: 18px; padding: 14px 20px; min-width: 140px; }
         }
 
-        /* Desktop */
-        @media (min-width: 1200px) {
-            .logo {
-                max-width: 70%;
-                max-height: 50vh;
-            }
-            .container {
-                gap: 25px;
-            }
-            .start-btn {
-                font-size: 20px;
-                padding: 16px 25px;
-                min-width: 160px;
-            }
+        @media (max-width: 480px) {
+            .logo { max-width: 95%; max-height: 35vh; }
+            .container { gap: 15px; padding: 10px; }
+            .controls { max-width: 320px; }
+            .class-dropdown { font-size: 16px; padding: 12px 18px; padding-right: 40px; max-width: 300px; }
+            .button-group { flex-direction: column; align-items: center; max-width: 300px; gap: 10px; }
+            .start-btn { font-size: 16px; padding: 14px 20px; min-width: unset; max-width: 300px; width: 100%; }
         }
 
-        /* Mobile */
-        @media (max-width: 767px) {
-            .logo {
-                max-width: 95%;
-                max-height: 35vh;
-            }
-            .container {
-                gap: 15px;
-                padding: 10px;
-            }
-            .controls {
-                max-width: 320px;
-            }
-            .class-dropdown {
-                font-size: 16px;
-                padding: 12px 18px;
-                padding-right: 40px;
-                max-width: 300px;
-            }
-            .button-group {
-                flex-direction: column;
-                align-items: center;
-                max-width: 300px;
-                gap: 10px;
-            }
-            .start-btn {
-                font-size: 16px;
-                padding: 14px 20px;
-                min-width: unset;
-                max-width: 300px;
-                width: 100%;
-            }
-        }
-
-        /* Landscape orientation on tablets/phones */
         @media (max-height: 600px) and (orientation: landscape) {
-            .logo {
-                max-height: 25vh;
-                max-width: 50%;
-            }
-            .container {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px 25px;
-                padding: 10px 20px;
-            }
-            .logo-container {
-                flex: 0 0 auto;
-                max-width: 35%;
-            }
-            .controls {
-                flex: 0 0 auto;
-                max-width: 50%;
-                gap: 10px;
-            }
-            .class-dropdown {
-                font-size: 14px;
-                padding: 10px 16px;
-                padding-right: 35px;
-                max-width: 250px;
-            }
-            .button-group {
-                flex-direction: row;
-                max-width: 300px;
-                gap: 10px;
-            }
-            .start-btn {
-                font-size: 14px;
-                padding: 10px 16px;
-                min-width: 120px;
-                max-width: 150px;
-            }
-        }
-
-        @media (max-height: 450px) and (orientation: landscape) {
-            .logo {
-                max-height: 18vh;
-            }
-            .class-dropdown {
-                font-size: 12px;
-                padding: 8px 14px;
-                padding-right: 30px;
-                max-width: 200px;
-            }
-            .start-btn {
-                font-size: 12px;
-                padding: 8px 14px;
-                min-width: 100px;
-                max-width: 120px;
-            }
-            .controls {
-                gap: 6px;
-            }
-            .container {
-                gap: 8px 15px;
-            }
+            .logo { max-height: 25vh; max-width: 50%; }
+            .container { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px 25px; padding: 10px 20px; }
+            .logo-container { flex: 0 0 auto; max-width: 35%; }
+            .controls { flex: 0 0 auto; max-width: 50%; gap: 10px; }
+            .class-dropdown { font-size: 14px; padding: 10px 16px; padding-right: 35px; max-width: 250px; }
+            .button-group { flex-direction: row; max-width: 300px; gap: 10px; }
+            .start-btn { font-size: 14px; padding: 10px 16px; min-width: 120px; max-width: 150px; }
         }
     </style>
 </head>
@@ -322,10 +212,10 @@
             <div class="class-selector">
                 <select id="classDropdown" class="class-dropdown">
                     <option value="">-- Select Class --</option>
-                    <option value="2pm">2:00 PM Class</option>
-                    <option value="3pm">3:00 PM Class</option>
-                    <option value="4pm">4:00 PM Class</option>
-                    <option value="5pm">5:00 PM Class</option>
+                    <option value="2pm">2:00 PM Class (A1)</option>
+                    <option value="3pm">3:00 PM Class (A1)</option>
+                    <option value="4pm">4:00 PM Class (High A2)</option>
+                    <option value="5pm">5:00 PM Class (Pre A1)</option>
                 </select>
             </div>
 
@@ -337,6 +227,15 @@
     </div>
 
     <script>
+        // CSV files for each class
+        const CSV_FILES = {
+            '2pm': '2pm.csv',
+            '3pm': '3pm.csv',
+            '4pm': '4pm.csv',
+            '5pm': '5pm.csv'
+        };
+        
+        // Get elements
         const classDropdown = document.getElementById('classDropdown');
         const teamRoundBtn = document.getElementById('teamRoundBtn');
         const eliminationRoundBtn = document.getElementById('eliminationRoundBtn');
@@ -352,8 +251,8 @@
             }
         });
 
-        // Team Round button click - loads mode1.html
-        teamRoundBtn.addEventListener('click', function() {
+        // Function to handle navigation
+        function navigateTo(mode) {
             const selectedClass = classDropdown.value;
             
             if (!selectedClass) {
@@ -361,69 +260,34 @@
                 return;
             }
 
+            // Store the selected class and CSV file in localStorage
             localStorage.setItem('megaScrambleClass', selectedClass);
+            localStorage.setItem('megaScrambleCSV', CSV_FILES[selectedClass]);
             
-            // For today: 2pm loads mode1.html
-            // Other classes show message
-            if (selectedClass === '2pm') {
+            // Navigate to the selected mode
+            if (mode === 'team') {
                 window.location.href = 'mode1.html';
-            } else {
-                alert(`📅 ${classDropdown.options[classDropdown.selectedIndex].text}\n\nTeam Round will be available soon!\n\nFor today, please select the 2:00 PM class.`);
-                classDropdown.value = '';
-                teamRoundBtn.disabled = true;
-                eliminationRoundBtn.disabled = true;
-                localStorage.removeItem('megaScrambleClass');
+            } else if (mode === 'elimination') {
+                window.location.href = 'mode2.html';
             }
+        }
+
+        // Team Round button click
+        teamRoundBtn.addEventListener('click', function() {
+            navigateTo('team');
         });
 
-        // Elimination Round button click - loads mode2.html
+        // Elimination Round button click
         eliminationRoundBtn.addEventListener('click', function() {
-            const selectedClass = classDropdown.value;
-            
-            if (!selectedClass) {
-                alert('⚠️ Please select a class first!');
-                return;
-            }
-
-            localStorage.setItem('megaScrambleClass', selectedClass);
-            
-            // For today: 2pm loads mode2.html (when available)
-            // Other classes show message
-            if (selectedClass === '2pm') {
-                // Check if mode2.html exists, if not show message
-                fetch('mode2.html', { method: 'HEAD' })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.href = 'mode2.html';
-                        } else {
-                            alert('📅 Elimination Round is coming soon!\n\nPlease check back later.');
-                        }
-                    })
-                    .catch(() => {
-                        alert('📅 Elimination Round is coming soon!\n\nPlease check back later.');
-                    });
-            } else {
-                alert(`📅 ${classDropdown.options[classDropdown.selectedIndex].text}\n\nElimination Round will be available soon!\n\nFor today, please select the 2:00 PM class.`);
-                classDropdown.value = '';
-                teamRoundBtn.disabled = true;
-                eliminationRoundBtn.disabled = true;
-                localStorage.removeItem('megaScrambleClass');
-            }
+            navigateTo('elimination');
         });
 
         // Restore previously selected class if exists
         const savedClass = localStorage.getItem('megaScrambleClass');
         if (savedClass) {
             classDropdown.value = savedClass;
-            if (savedClass === '2pm') {
-                teamRoundBtn.disabled = false;
-                eliminationRoundBtn.disabled = false;
-            } else {
-                teamRoundBtn.disabled = true;
-                eliminationRoundBtn.disabled = true;
-                classDropdown.value = '';
-                localStorage.removeItem('megaScrambleClass');
-            }
+            teamRoundBtn.disabled = false;
+            eliminationRoundBtn.disabled = false;
         }
     </script>
 </body>
