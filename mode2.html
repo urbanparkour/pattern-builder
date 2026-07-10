@@ -26,6 +26,7 @@
             overflow: auto;
         }
 
+        /* ===== TIMER BAR AT TOP ===== */
         .timer-container {
             position: fixed;
             top: 0;
@@ -178,6 +179,7 @@
             gap: 12px 16px;
         }
 
+        /* ===== LEGO BLOCK STYLES ===== */
         .word-block {
             font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif;
             font-size: 22px;
@@ -259,16 +261,19 @@
             100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
         }
 
-        .color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
-        .color-verb { background: #2ED573; border-bottom-color: #1E8449; }
-        .color-object { background: #FF4757; border-bottom-color: #C0392B; }
-        .color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }
-        .color-preposition { background: #FF8E53; border-bottom-color: #D35400; }
-        .color-article { background: #F9A8D4; border-bottom-color: #C71585; }
-        .color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }
-        .color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }
-        .color-other { background: #B0BEC5; border-bottom-color: #78909C; }
+        /* ===== COLOR SCHEME ===== */
+        .color-subject { background: #FFD93D; border-bottom-color: #D4A017; }      /* Yellow - Subject */
+        .color-verb { background: #2ED573; border-bottom-color: #1E8449; }          /* Green - Verb */
+        .color-object { background: #FF4757; border-bottom-color: #C0392B; }        /* Red - Object */
+        .color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }        /* Purple - Adverb */
+        .color-preposition { background: #FF8E53; border-bottom-color: #D35400; }   /* Orange - Preposition */
+        .color-article { background: #F9A8D4; border-bottom-color: #C71585; }       /* Pink - Article */
+        .color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }     /* Blue - Adjective */
+        .color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }   /* Teal - Conjunction */
+        .color-other { background: #B0BEC5; border-bottom-color: #78909C; }         /* Grey - Other */
+        .color-white { background: #FFFFFF; border-bottom-color: #D0D0D0; color: #222; }  /* White - Unclassified */
 
+        /* Answer blocks use SAME colors */
         .answer-word-block {
             font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif;
             font-size: 22px;
@@ -325,6 +330,7 @@
             display: block;
         }
 
+        /* Answer blocks use SAME color classes */
         .answer-word-block.color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
         .answer-word-block.color-verb { background: #2ED573; border-bottom-color: #1E8449; }
         .answer-word-block.color-object { background: #FF4757; border-bottom-color: #C0392B; }
@@ -334,6 +340,7 @@
         .answer-word-block.color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }
         .answer-word-block.color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }
         .answer-word-block.color-other { background: #B0BEC5; border-bottom-color: #78909C; }
+        .answer-word-block.color-white { background: #FFFFFF; border-bottom-color: #D0D0D0; color: #222; }
 
         .answer-section {
             background: #f8f9fa;
@@ -602,13 +609,12 @@
 <div class="question-container">
     <h1 class="stage-title">👑 ROUND 2: ULTIMATE BATTLE</h1>
     <div class="sub-title">🇰🇷 Korean Words → English Sentences</div>
-    <div class="class-badge" id="classDisplay">Loading class...</div>
+    <div class="class-badge" id="classDisplay">Class: <span>2:00 PM Class (A1)</span></div>
 
     <div class="question-number" id="questionNumber"></div>
 
-    <div class="word-cloud" id="wordCloud">
-        <div style="color: white; font-size: 18px;">Loading questions...</div>
-    </div>
+    <!-- WORD CLOUD - LEGO blocks with Korean words -->
+    <div class="word-cloud" id="wordCloud"></div>
 
     <div class="answer-section" id="answerSection">
         <div class="answer-label">✓ CORRECT ENGLISH SENTENCE</div>
@@ -637,14 +643,287 @@
 </div>
 
 <script>
-// ===== NO HARDCODED SENTENCES - LOAD FROM CSV =====
-
-const classNames = {
-    '2pm': '2:00 PM Class (A1)',
-    '3pm': '3:00 PM Class (A1)',
-    '4pm': '4:00 PM Class (High A2)',
-    '5pm': '5:00 PM Class (Pre A1)'
-};
+// ===== 30 SENTENCES (Same as mode1.html) =====
+const SAMPLE_QUESTIONS = [
+    // Original 9 sentences
+    { 
+        scrambled: "나는 밖에서 놀 거야", 
+        correct: "I'm going to play outside",
+        colorMap: {
+            '나는': 'color-subject', '놀': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'play': 'color-verb', 'outside': 'color-other'
+        }
+    },
+    { 
+        scrambled: "나는 친구들을 만날 거야", 
+        correct: "I'm going to meet my friends",
+        colorMap: {
+            '나는': 'color-subject', '친구들을': 'color-adjective', '만날': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'meet': 'color-verb', 'my': 'color-other', 'friends': 'color-adjective'
+        }
+    },
+    { 
+        scrambled: "나는 더 열심히 공부할 거야", 
+        correct: "I'm going to study harder",
+        colorMap: {
+            '나는': 'color-subject', '공부할': 'color-verb', '거야': 'color-verb',
+            '더': 'color-other', '열심히': 'color-other',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'study': 'color-verb', 'harder': 'color-other'
+        }
+    },
+    { 
+        scrambled: "나는 할머니, 할아버지를 방문할 거야", 
+        correct: "I'm going to visit my grandparents",
+        colorMap: {
+            '나는': 'color-subject', '할머니': 'color-adjective', '할아버지를': 'color-adjective',
+            '방문할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'visit': 'color-verb', 'my': 'color-other', 'grandparents': 'color-adjective'
+        }
+    },
+    { 
+        scrambled: "나는 샤워할 거야", 
+        correct: "I'm going to take a shower",
+        colorMap: {
+            '나는': 'color-subject', '샤워할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'take': 'color-verb', 'a': 'color-other', 'shower': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 창가에 앉을 거야", 
+        correct: "I'm going to sit by the window",
+        colorMap: {
+            '나는': 'color-subject', '창가에': 'color-other', '앉을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'sit': 'color-verb', 'by': 'color-other', 'the': 'color-other', 'window': 'color-other'
+        }
+    },
+    { 
+        scrambled: "나는 가족과 외식할 거야", 
+        correct: "I'm going to eat out with my family",
+        colorMap: {
+            '나는': 'color-subject', '가족과': 'color-other', '외식할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'eat': 'color-verb', 'out': 'color-other', 'with': 'color-other',
+            'my': 'color-other', 'family': 'color-other'
+        }
+    },
+    { 
+        scrambled: "나는 수영하는 것을 배울 거야", 
+        correct: "I'm going to learn to swim",
+        colorMap: {
+            '나는': 'color-subject', '수영하는': 'color-adjective', '것을': 'color-adjective',
+            '배울': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-other',
+            'learn': 'color-verb', 'swim': 'color-adjective'
+        }
+    },
+    { 
+        scrambled: "나는 내년에 4학년이 될 거야", 
+        correct: "I'm going to be in fourth grade next year",
+        colorMap: {
+            '나는': 'color-subject', '내년에': 'color-other', '4학년이': 'color-adjective',
+            '될': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'be': 'color-verb', 'in': 'color-other', 'fourth': 'color-adjective',
+            'grade': 'color-adjective', 'next': 'color-other', 'year': 'color-other'
+        }
+    },
+    // Additional 21 sentences
+    { 
+        scrambled: "나는 아침을 먹을 거야", 
+        correct: "I'm going to eat breakfast",
+        colorMap: {
+            '나는': 'color-subject', '아침을': 'color-object', '먹을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'eat': 'color-verb', 'breakfast': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 저녁을 요리할 거야", 
+        correct: "I'm going to cook dinner",
+        colorMap: {
+            '나는': 'color-subject', '저녁을': 'color-object', '요리할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'cook': 'color-verb', 'dinner': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 학교에 갈 거야", 
+        correct: "I'm going to go to school",
+        colorMap: {
+            '나는': 'color-subject', '학교에': 'color-other', '갈': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'go': 'color-verb', 'school': 'color-other'
+        }
+    },
+    { 
+        scrambled: "나는 음악을 들을 거야", 
+        correct: "I'm going to listen to music",
+        colorMap: {
+            '나는': 'color-subject', '음악을': 'color-object', '들을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'listen': 'color-verb', 'music': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 운동할 거야", 
+        correct: "I'm going to exercise",
+        colorMap: {
+            '나는': 'color-subject', '운동할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'exercise': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 책을 읽을 거야", 
+        correct: "I'm going to read a book",
+        colorMap: {
+            '나는': 'color-subject', '책을': 'color-object', '읽을': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'read': 'color-verb', 'a': 'color-article', 'book': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 영화를 볼 거야", 
+        correct: "I'm going to watch a movie",
+        colorMap: {
+            '나는': 'color-subject', '영화를': 'color-object', '볼': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'watch': 'color-verb', 'a': 'color-article', 'movie': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 게임을 할 거야", 
+        correct: "I'm going to play a game",
+        colorMap: {
+            '나는': 'color-subject', '게임을': 'color-object', '할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'play': 'color-verb', 'a': 'color-article', 'game': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 잠을 잘 거야", 
+        correct: "I'm going to sleep well",
+        colorMap: {
+            '나는': 'color-subject', '잠을': 'color-object', '잘': 'color-adverb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'sleep': 'color-verb', 'well': 'color-adverb'
+        }
+    },
+    { 
+        scrambled: "나는 일찍 일어날 거야", 
+        correct: "I'm going to wake up early",
+        colorMap: {
+            '나는': 'color-subject', '일찍': 'color-adverb', '일어날': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'wake': 'color-verb', 'up': 'color-other', 'early': 'color-adverb'
+        }
+    },
+    { 
+        scrambled: "나는 산책할 거야", 
+        correct: "I'm going to take a walk",
+        colorMap: {
+            '나는': 'color-subject', '산책할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'take': 'color-verb', 'a': 'color-article', 'walk': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 커피를 마실 거야", 
+        correct: "I'm going to drink coffee",
+        colorMap: {
+            '나는': 'color-subject', '커피를': 'color-object', '마실': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'drink': 'color-verb', 'coffee': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 친구에게 전화할 거야", 
+        correct: "I'm going to call my friend",
+        colorMap: {
+            '나는': 'color-subject', '친구에게': 'color-other', '전화할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'call': 'color-verb', 'my': 'color-other', 'friend': 'color-adjective'
+        }
+    },
+    { 
+        scrambled: "나는 편지를 쓸 거야", 
+        correct: "I'm going to write a letter",
+        colorMap: {
+            '나는': 'color-subject', '편지를': 'color-object', '쓸': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'write': 'color-verb', 'a': 'color-article', 'letter': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 그림을 그릴 거야", 
+        correct: "I'm going to draw a picture",
+        colorMap: {
+            '나는': 'color-subject', '그림을': 'color-object', '그릴': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'draw': 'color-verb', 'a': 'color-article', 'picture': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 한국어를 공부할 거야", 
+        correct: "I'm going to study Korean",
+        colorMap: {
+            '나는': 'color-subject', '한국어를': 'color-object', '공부할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'study': 'color-verb', 'korean': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 영어를 배울 거야", 
+        correct: "I'm going to learn English",
+        colorMap: {
+            '나는': 'color-subject', '영어를': 'color-object', '배울': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'learn': 'color-verb', 'english': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 자전거를 탈 거야", 
+        correct: "I'm going to ride a bike",
+        colorMap: {
+            '나는': 'color-subject', '자전거를': 'color-object', '탈': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'ride': 'color-verb', 'a': 'color-article', 'bike': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 시험을 볼 거야", 
+        correct: "I'm going to take a test",
+        colorMap: {
+            '나는': 'color-subject', '시험을': 'color-object', '볼': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'take': 'color-verb', 'a': 'color-article', 'test': 'color-object'
+        }
+    },
+    { 
+        scrambled: "나는 청소할 거야", 
+        correct: "I'm going to clean",
+        colorMap: {
+            '나는': 'color-subject', '청소할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'clean': 'color-verb'
+        }
+    },
+    { 
+        scrambled: "나는 쇼핑할 거야", 
+        correct: "I'm going to go shopping",
+        colorMap: {
+            '나는': 'color-subject', '쇼핑할': 'color-verb', '거야': 'color-verb',
+            "i'm": 'color-subject', 'going': 'color-verb', 'to': 'color-verb',
+            'go': 'color-verb', 'shopping': 'color-verb'
+        }
+    }
+];
 
 // Shuffle array
 function shuffleArray(array) {
@@ -655,72 +934,8 @@ function shuffleArray(array) {
     return array;
 }
 
-// ===== COLOR MAPPING FUNCTION =====
-function getWordColor(word, isKorean = true) {
-    const w = word.toLowerCase().trim();
-    
-    // Subject (Yellow)
-    const koreanSubjects = ['나는', '저는', '그는', '그녀는', '우리는', '내가', '제가', '네가', '우리가', '너는'];
-    const englishSubjects = ['i', "i'm", 'you', 'he', 'she', 'it', 'we', 'they'];
-    if (koreanSubjects.includes(w) || englishSubjects.includes(w)) {
-        return 'color-subject';
-    }
-    
-    // Verb (Green)
-    const koreanVerbs = ['놀', '만날', '공부할', '방문할', '샤워할', '앉을', '외식할', '배울', '될', '거야', 
-        '먹을', '요리할', '갈', '들을', '운동할', '읽을', '볼', '할', '잘', '일어날', '산책할', '마실', 
-        '전화할', '쓸', '그릴', '탈', '청소할', '쇼핑할', '도울', '만들', '살', '쉴'];
-    const englishVerbs = ['go', 'going', 'play', 'meet', 'study', 'visit', 'take', 'sit', 'eat', 'learn', 
-        'swim', 'be', 'being', 'cook', 'listen', 'exercise', 'read', 'watch', 'sleep', 'wake', 'walk', 
-        'drink', 'call', 'write', 'draw', 'ride', 'clean', 'shop', 'help', 'make', 'buy', 'rest'];
-    if (koreanVerbs.some(v => w === v || w.includes(v)) || englishVerbs.includes(w)) {
-        return 'color-verb';
-    }
-    
-    // Object (Red)
-    const koreanObjects = ['친구들을', '할머니', '할아버지를', '수영하는', '것을', '4학년이', '아침을', '저녁을', 
-        '음악을', '책을', '영화를', '게임을', '잠을', '커피를', '편지를', '그림을', '한국어를', '영어를', 
-        '자전거를', '시험을', '숙제를', '엄마를', '방을', '케이크를', '조부모님을'];
-    const englishObjects = ['friends', 'grandparents', 'shower', 'window', 'family', 'swim', 'fourth', 'grade',
-        'breakfast', 'dinner', 'music', 'book', 'movie', 'game', 'coffee', 'letter', 'picture', 'korean',
-        'english', 'bike', 'test', 'homework', 'mom', 'room', 'cake', 'grandparents'];
-    if (koreanObjects.some(o => w === o || w.includes(o)) || englishObjects.some(o => w === o)) {
-        return 'color-object';
-    }
-    
-    // Preposition (Orange)
-    const koreanPreps = ['창가에', '가족과', '에게', '에', '와', '와는', '로', '부터', '까지', '밖에서', '학교에', '과'];
-    const englishPreps = ['by', 'with', 'in', 'to', 'at', 'on', 'for', 'from', 'of', 'out', 'outside', 'school'];
-    if (koreanPreps.includes(w) || englishPreps.includes(w)) {
-        return 'color-preposition';
-    }
-    
-    // Adverb (Purple)
-    const koreanAdverbs = ['더', '열심히', '내년에', '다음', '내년', '년', '일찍', '잘', '오늘', '이번', '주말에', '내일', '방과', '후에', '다음', '주에'];
-    const englishAdverbs = ['harder', 'next', 'year', 'early', 'well', 'today', 'this', 'weekend', 'tomorrow', 'after', 'school', 'week'];
-    if (koreanAdverbs.includes(w) || englishAdverbs.includes(w)) {
-        return 'color-adverb';
-    }
-    
-    // Article (Pink)
-    const englishArticles = ['a', 'an', 'the'];
-    if (englishArticles.includes(w)) {
-        return 'color-article';
-    }
-    
-    // Adjective (Blue)
-    const koreanAdjectives = ['새로운', '큰', '작은', '예쁜', '못생긴', '좋은', '나쁜', '아픈', '바쁜', '늦을', '피곤한', '준비가', '새', '많이'];
-    const englishAdjectives = ['my', 'your', 'his', 'her', 'their', 'new', 'big', 'small', 'good', 'bad', 
-        'pretty', 'ugly', 'sick', 'busy', 'late', 'tired', 'ready', 'more'];
-    if (koreanAdjectives.includes(w) || englishAdjectives.includes(w)) {
-        return 'color-adjective';
-    }
-    
-    return 'color-other';
-}
-
 // Render Korean word cloud
-function renderWordCloud(sentence) {
+function renderWordCloud(sentence, colorMap) {
     const words = sentence.split(/\s+/).filter(w => w.length > 0);
     const container = $('#wordCloud');
     container.empty();
@@ -728,7 +943,7 @@ function renderWordCloud(sentence) {
     const shuffledWords = shuffleArray([...words]);
     
     shuffledWords.forEach((word, index) => {
-        const colorClass = getWordColor(word, true);
+        const colorClass = colorMap && colorMap[word.toLowerCase()] ? colorMap[word.toLowerCase()] : 'color-other';
         const block = $('<span class="word-block"></span>')
             .addClass(colorClass)
             .text(word)
@@ -743,13 +958,13 @@ function renderWordCloud(sentence) {
 }
 
 // Render English answer with matching colors
-function renderAnswer(sentence) {
+function renderAnswer(sentence, colorMap) {
     const words = sentence.split(/\s+/).filter(w => w.length > 0);
     const container = $('#answerBlocks');
     container.empty();
     
     words.forEach((word, index) => {
-        const colorClass = getWordColor(word, false);
+        const colorClass = colorMap && colorMap[word.toLowerCase()] ? colorMap[word.toLowerCase()] : 'color-other';
         const block = $('<span class="answer-word-block"></span>')
             .addClass(colorClass)
             .text(word)
@@ -794,69 +1009,93 @@ function startTimer() {
     }, 1000);
 }
 
-// ===== GAME LOGIC =====
+// Game logic
 let questions = [];
 let currentIndex = 0;
 let gameActive = true;
-let timerTimeout;
+
+/* ============================================================
+   CSV LOADING + BEST-EFFORT AUTO-COLOR
+   Yellow = Subject | Green = Verb | Blue = Object | White = other
+   ============================================================ */
+const CLASS_LABELS = {
+    '2pm': '2:00 PM Class (A1)',
+    '3pm': '3:00 PM Class (A2)',
+    '4pm': '4:00 PM Class (B1)',
+    '5pm': '5:00 PM Class (Low A1)'
+};
+const selectedClass = localStorage.getItem('megaScrambleClass') || '2pm';
+const csvFile = localStorage.getItem('megaScrambleCSV') || (selectedClass + '.csv');
+$('#classDisplay').html('Class: <span>' + (CLASS_LABELS[selectedClass] || selectedClass) + '</span>');
+
+const KR_SUBJ = ['나는','저는','너는','그는','그녀는','우리는','내가','제가','네가','우리가','우리'];
+const KR_AUX  = ['거야','거니','거예요','거야?','거니?','것','거','래'];
+const EN_SUBJ = new Set(['i',"i'm",'im','you','he','she','it','we','they']);
+const EN_VERB = new Set([
+    'go','going','goes','do','does','did','buy','help','play','read','write','wrote',
+    'make','made','wake','clean','rest','visit','study','watch','cook','swim','swimming',
+    'prepare','eat','drink','ride','meet','like','need','get','understand','finish','come',
+    'forgot','feel','feeling','take','learn','save','solve','answer','start','sleep',
+    'practice','use','become','give','speak','share','work','be','is','are','am','was','were',
+    'will','can','could','should','think','have','has','not','trying','ready'
+]);
+const EN_OBJ = new Set([
+    'homework','bike','mom','soccer','book','books','letter','cake','room','weekend',
+    'pizza','milk','chicken','blue','apple','apples','juice','dog','dogs','game','games',
+    'video','friend','friends','english','dinner','movie','umbrella','basketball','test',
+    'water','phone','mistakes','best','language','money','question','questions','ideas',
+    'team','person','presentation','grandparents','parents','something','bed','cat','cats',
+    'ball','pencil','doll','hat','sister','brother','music','ice','cream','picture','shower',
+    'window','family','swim','grade'
+]);
+function stripP(w){ return (w || '').replace(/[.,!?;:'"’()]/g,'').trim(); }
+function autoColorMap(korean, english){
+    const map = {};
+    const kw = korean.split(/\s+/).map(stripP).filter(Boolean);
+    let verbIdx = kw.length - 1;
+    while (verbIdx > 0 && KR_AUX.includes(kw[verbIdx])) verbIdx--;
+    kw.forEach((w, i) => {
+        let cls = 'color-white';
+        if (KR_SUBJ.includes(w)) cls = 'color-subject';
+        else if (i === verbIdx) cls = 'color-verb';
+        else if (/를$/.test(w)) cls = 'color-adjective';
+        else if (/을$/.test(w) && !KR_AUX.includes(kw[i+1] || '')) cls = 'color-adjective';
+        map[w] = cls;
+    });
+    const ew = english.split(/\s+/).map(w => stripP(w).toLowerCase()).filter(Boolean);
+    ew.forEach(w => {
+        let cls = 'color-white';
+        if (EN_SUBJ.has(w)) cls = 'color-subject';
+        else if (EN_VERB.has(w)) cls = 'color-verb';
+        else if (EN_OBJ.has(w)) cls = 'color-adjective';
+        map[w] = cls;
+    });
+    return map;
+}
 
 $(document).ready(function () {
-    const selectedClass = localStorage.getItem('megaScrambleClass');
-    const selectedCSV = localStorage.getItem('megaScrambleCSV');
-    
-    if (!selectedClass || !selectedCSV) {
-        alert('⚠️ No class selected. Please go back and select a class.');
-        window.location.href = 'index.html';
-        return;
-    }
-    
-    const displayName = classNames[selectedClass] || selectedClass.toUpperCase();
-    $('#classDisplay').html(`Class: <span>${displayName}</span>`);
-    
-    const url = selectedCSV + '?t=' + new Date().getTime();
-    
-    Papa.parse(url, {
+    Papa.parse(csvFile, {
         download: true,
         header: true,
         skipEmptyLines: true,
-        complete: function(results) {
-            if (results.data && results.data.length > 0) {
-                questions = results.data
-                    .filter(row => row['Scrambled sentence'] && row['Answer'])
-                    .map(row => ({
-                        scrambled: row['Scrambled sentence'].trim(),
-                        correct: row['Answer'].trim()
-                    }));
-                
-                if (questions.length > 0) {
-                    questions = shuffleArray(questions);
-                    console.log('Questions loaded. Total:', questions.length);
-                    showQuestion();
-                    
-                    // Start timer
-                    startTimer();
-                    
-                    timerTimeout = setTimeout(function() {
-                        if (gameActive) {
-                            endGameAndGoToWinner();
-                        }
-                    }, 900000);
-                    
-                    $('.timer-bar').on('animationend', function() {
-                        if (gameActive) {
-                            endGameAndGoToWinner();
-                        }
-                    });
-                } else {
-                    alert('No valid questions found. Check your CSV format.');
-                }
-            } else {
-                alert('Could not load questions.');
+        complete: function (results) {
+            const rows = results.data.filter(r =>
+                (r['Scrambled sentence'] || '').trim() && (r['Answer'] || '').trim());
+            if (!rows.length) {
+                $('#wordCloud').html('<div style="color:#fff;font-size:16px;">⚠️ Could not load ' + csvFile + '. Make sure it is in the same folder.</div>');
+                return;
             }
+            questions = shuffleArray(rows.map(r => {
+                const kr = r['Scrambled sentence'].trim();
+                const en = r['Answer'].trim();
+                return { scrambled: kr, correct: en, colorMap: autoColorMap(kr, en) };
+            }));
+            console.log('Questions loaded from ' + csvFile + '. Total:', questions.length);
+            showQuestion();
+            startTimer();
         },
-        error: function(error) {
-            alert('Could not load CSV file: ' + selectedCSV);
-            console.error('CSV Load Error:', error);
+        error: function () {
+            $('#wordCloud').html('<div style="color:#fff;font-size:16px;">⚠️ Error loading ' + csvFile + '. Open via a web server (not file://) so the CSV can load.</div>');
         }
     });
 });
@@ -872,8 +1111,8 @@ function showQuestion() {
     const q = questions[currentIndex];
     
     $('#questionNumber').text(`Round ${currentIndex + 1} of ${questions.length}`);
-    renderWordCloud(q.scrambled);
-    renderAnswer(q.correct);
+    renderWordCloud(q.scrambled, q.colorMap);
+    renderAnswer(q.correct, q.colorMap);
     $('#roundStatus').html(`📋 Round ${currentIndex + 1} of ${questions.length} - Waiting for answers...`);
     
     $('#answerSection').hide();
@@ -886,7 +1125,6 @@ function endGameAndGoToWinner() {
     
     gameActive = false;
     clearInterval(timerInterval);
-    clearTimeout(timerTimeout);
     $('#timerBar').css('animation-play-state', 'paused');
     
     window.location.href = 'winner.html';
@@ -894,7 +1132,6 @@ function endGameAndGoToWinner() {
 
 function showTimesUpModal() {
     clearInterval(timerInterval);
-    clearTimeout(timerTimeout);
     $('#timesUpModal').fadeIn(300).css('display', 'flex');
     $('#timerBar').css('animation-play-state', 'paused');
 }
@@ -923,7 +1160,6 @@ $('#modalOkBtn').on('click', function() {
 
 window.addEventListener('beforeunload', function() {
     clearInterval(timerInterval);
-    clearTimeout(timerTimeout);
 });
 </script>
 

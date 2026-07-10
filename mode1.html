@@ -48,6 +48,7 @@
         .color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }
         .color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }
         .color-other { background: #B0BEC5; border-bottom-color: #78909C; }
+        .color-white { background: #FFFFFF; border-bottom-color: #D0D0D0; color: #222; }
         .answer-word-block { font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif; font-size: 22px; font-weight: 700; padding: 10px 18px; color: #1A1A1A; display: inline-block; letter-spacing: 0.5px; text-shadow: 1px 1px 0 rgba(255,255,255,0.3); position: relative; border-radius: 5px; border-bottom: 7px solid rgba(0,0,0,0.25); box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.2); min-width: 55px; text-align: center; }
         .answer-word-block::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 10px; background: inherit; border-radius: 50% 50% 0 0; box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 -2px 0 rgba(0,0,0,0.1); filter: brightness(1.15); }
         .answer-word-block::after { content: ''; position: absolute; top: -10px; left: 30%; transform: translateX(-50%); width: 20px; height: 10px; background: inherit; border-radius: 50% 50% 0 0; box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 -2px 0 rgba(0,0,0,0.1); filter: brightness(1.15); display: none; }
@@ -60,6 +61,7 @@
         .answer-word-block.color-article { background: #F9A8D4; border-bottom-color: #C71585; }
         .answer-word-block.color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }
         .answer-word-block.color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }
+        .answer-word-block.color-white { background: #FFFFFF; border-bottom-color: #D0D0D0; color: #222; }
         .answer-word-block.color-other { background: #B0BEC5; border-bottom-color: #78909C; }
         .answer-section { background: #f8f9fa; border-radius: 16px; padding: 12px 15px; margin-bottom: 10px; display: none; flex-shrink: 0; border: 3px solid #4ECDC4; }
         .answer-label { font-family: 'Fredoka One', cursive; font-size: 18px; color: #4ECDC4; margin-bottom: 8px; }
@@ -118,4 +120,223 @@
 
     <div class="controls">
         <button class="control-btn btn-show" id="showAnswerBtn">Show Answer</button>
-        <button class="control-btn
+ btn-next hidden" id="nextBtn">Next ➜</button>
+        <button class="control-btn" id="finishBtn" style="background:#FF6B6B; box-shadow:0 4px 0 #C0392B; display:none;">🏆 Finish</button>
+        <a href="index.html" class="control-btn" id="homeBtn" style="background:#95A5A6; box-shadow:0 4px 0 #6C7A7B; text-decoration:none; display:inline-block; line-height:1.4;">🏠 Home</a>
+    </div>
+</div>
+
+<script>
+/* ============================================================
+   PATTERN BUILDER — MODE 1 (TEAM ROUND)
+   Loads the class CSV chosen on index.html and auto-colors words.
+   Yellow = Subject | Green = Verb | Blue = Object | White = other
+   ============================================================ */
+
+/* ---------- CLASS + CSV RESOLUTION ---------- */
+const CLASS_LABELS = {
+    '2pm': '2:00 PM Class (A1)',
+    '3pm': '3:00 PM Class (A2)',
+    '4pm': '4:00 PM Class (B1)',
+    '5pm': '5:00 PM Class (Low A1)'
+};
+const selectedClass = localStorage.getItem('megaScrambleClass') || '2pm';
+const csvFile = localStorage.getItem('megaScrambleCSV') || (selectedClass + '.csv');
+$('#classDisplay').html('Class: <span>' + (CLASS_LABELS[selectedClass] || selectedClass) + '</span>');
+
+/* ---------- AUTO-COLOR DICTIONARIES ---------- */
+const KR_SUBJ = ['나는','저는','너는','그는','그녀는','우리는','내가','제가','네가','우리가','우리'];
+const KR_AUX  = ['거야','거니','거예요','거야?','거니?','것','거','래']; // trailing helpers to skip when finding verb
+
+const EN_SUBJ = new Set(['i',"i'm",'im','you','he','she','it','we','they']);
+const EN_VERB = new Set([
+    'go','going','goes','do','does','did','buy','help','play','read','write','wrote',
+    'make','made','wake','clean','rest','visit','study','watch','cook','swim','swimming',
+    'prepare','eat','drink','ride','meet','like','need','get','understand','finish','come',
+    'forgot','feel','feeling','take','learn','save','solve','answer','start','sleep',
+    'practice','use','become','give','speak','share','work','be','is','are','am','was','were',
+    'will','can','could','should','think','have','has','ride','not','trying','won','won\'t',
+    'don','doesn','can\'t','isn','ready'
+]);
+const EN_OBJ = new Set([
+    'homework','bike','mom','soccer','book','books','letter','cake','room','weekend',
+    'pizza','milk','chicken','blue','apple','apples','juice','dog','dogs','game','games',
+    'video','friend','friends','english','dinner','movie','umbrella','basketball','test',
+    'water','phone','mistakes','best','language','money','question','questions','ideas',
+    'team','person','presentation','grandparents','parents','something','bed','cat','cats',
+    'ball','pencil','doll','hat','sister','brother','music','ice','cream','picture','shower',
+    'window','family','swim','grade'
+]);
+
+function stripP(w){ return (w || '').replace(/[.,!?;:'"’()]/g,'').trim(); }
+
+/* Build a {word: colorClass} map for one Korean+English pair (best-effort). */
+function autoColorMap(korean, english){
+    const map = {};
+
+    // ----- KOREAN -----
+    const kw = korean.split(/\s+/).map(stripP).filter(Boolean);
+    let verbIdx = kw.length - 1;
+    // Skip trailing auxiliaries to find the real verb
+    while (verbIdx > 0 && KR_AUX.includes(kw[verbIdx])) verbIdx--;
+    kw.forEach((w, i) => {
+        let cls = 'color-white';
+        if (KR_SUBJ.includes(w)) cls = 'color-subject';
+        else if (i === verbIdx) cls = 'color-verb';
+        else if (/를$/.test(w)) cls = 'color-adjective';                       // object (blue)
+        else if (/을$/.test(w) && !KR_AUX.includes(kw[i+1] || '')) cls = 'color-adjective';
+        map[w] = cls;
+    });
+
+    // ----- ENGLISH -----
+    const ew = english.split(/\s+/).map(w => stripP(w).toLowerCase()).filter(Boolean);
+    ew.forEach(w => {
+        let cls = 'color-white';
+        if (EN_SUBJ.has(w)) cls = 'color-subject';
+        else if (EN_VERB.has(w)) cls = 'color-verb';
+        else if (EN_OBJ.has(w)) cls = 'color-adjective';
+        map[w] = cls;
+    });
+
+    return map;
+}
+
+/* ---------- SHUFFLE ---------- */
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+/* ---------- RENDERERS ---------- */
+function renderWordCloud(sentence, colorMap) {
+    const words = sentence.split(/\s+/).filter(w => w.length > 0);
+    const container = $('#wordCloud');
+    container.empty();
+    shuffleArray([...words]).forEach((word, index) => {
+        const key = stripP(word).toLowerCase();
+        const krKey = stripP(word);
+        const colorClass = (colorMap && (colorMap[krKey] || colorMap[key])) || 'color-white';
+        const block = $('<span class="word-block"></span>')
+            .addClass(colorClass)
+            .text(word)
+            .css('animation-delay', (index * 0.06) + 's');
+        if (word.length >= 3) block.addClass('long-word');
+        container.append(block);
+    });
+}
+
+function renderAnswer(sentence, colorMap) {
+    const words = sentence.split(/\s+/).filter(w => w.length > 0);
+    const container = $('#answerBlocks');
+    container.empty();
+    words.forEach((word, index) => {
+        const key = stripP(word).toLowerCase();
+        const colorClass = (colorMap && colorMap[key]) || 'color-white';
+        const block = $('<span class="answer-word-block"></span>')
+            .addClass(colorClass)
+            .text(word)
+            .css('animation-delay', (index * 0.06) + 's');
+        if (word.length >= 6) block.addClass('long-word');
+        container.append(block);
+    });
+}
+
+/* ---------- GAME STATE ---------- */
+let questions = [];
+let currentIndex = 0;
+
+function showQuestion() {
+    if (currentIndex >= questions.length) { endGame(); return; }
+    const q = questions[currentIndex];
+    $('#questionNumber').text('Question ' + (currentIndex + 1) + ' of ' + questions.length);
+    renderWordCloud(q.scrambled, q.colorMap);
+    renderAnswer(q.correct, q.colorMap);
+    $('#answerSection').hide();
+    $('#showAnswerBtn').removeClass('hidden').show();
+    $('#nextBtn').addClass('hidden');
+    $('#finishBtn').hide();
+}
+
+$('#showAnswerBtn').on('click', function(){
+    $('#answerSection').show();
+    $(this).addClass('hidden');
+    if (currentIndex >= questions.length - 1) {
+        $('#finishBtn').show();
+    } else {
+        $('#nextBtn').removeClass('hidden');
+    }
+});
+
+$('#nextBtn').on('click', function(){
+    currentIndex++;
+    showQuestion();
+});
+
+$('#finishBtn').on('click', endGame);
+
+function endGame() {
+    clearInterval(timerInterval);
+    const a = parseInt($('#scoreA').val()) || 0;
+    const b = parseInt($('#scoreB').val()) || 0;
+    let winner;
+    if (a > b) winner = '🔴 Team A';
+    else if (b > a) winner = '🔵 Team B';
+    else winner = "It's a Tie!";
+    localStorage.setItem('megaScrambleWinner', winner);
+    localStorage.setItem('megaScrambleGameEnded', 'true');
+    window.location.href = 'winner.html';
+}
+
+/* ---------- TIMER (15 min) ---------- */
+let timerInterval;
+let timeRemaining = 900;
+function updateTimerDisplay() {
+    const m = Math.floor(timeRemaining / 60);
+    const s = timeRemaining % 60;
+    const d = $('#timerDisplay');
+    d.text(String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'));
+    if (timeRemaining <= 30) d.css('color', '#FF4757'); else d.css('color', '');
+}
+function startTimer() {
+    updateTimerDisplay();
+    timerInterval = setInterval(function(){
+        timeRemaining--;
+        updateTimerDisplay();
+        if (timeRemaining <= 0) { clearInterval(timerInterval); endGame(); }
+    }, 1000);
+}
+
+/* ---------- LOAD CSV THEN START ---------- */
+$(document).ready(function () {
+    Papa.parse(csvFile, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+            const rows = results.data.filter(r =>
+                (r['Scrambled sentence'] || '').trim() && (r['Answer'] || '').trim());
+            if (!rows.length) {
+                $('#wordCloud').html('<div style="color:#fff;font-size:16px;">⚠️ Could not load ' + csvFile + '.<br>Make sure it is in the same folder.</div>');
+                return;
+            }
+            questions = shuffleArray(rows.map(r => {
+                const kr = r['Scrambled sentence'].trim();
+                const en = r['Answer'].trim();
+                return { scrambled: kr, correct: en, colorMap: autoColorMap(kr, en) };
+            }));
+            currentIndex = 0;
+            showQuestion();
+            startTimer();
+        },
+        error: function () {
+            $('#wordCloud').html('<div style="color:#fff;font-size:16px;">⚠️ Error loading ' + csvFile + '.<br>Open via a web server (not file://) so the CSV can load.</div>');
+        }
+    });
+});
+</script>
+
+</body>
+</html>
