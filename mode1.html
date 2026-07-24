@@ -40,7 +40,7 @@
         @keyframes floatIn { 0% { opacity: 0; transform: scale(0.7) rotate(-8deg) translateY(20px); } 100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); } }
         .color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
         .color-verb { background: #2ED573; border-bottom-color: #1E8449; }
-        .color-object { background: #FF4757; border-bottom-color: #C0392B; }
+        .color-object { background: #1E90FF; border-bottom-color: #1565C0; }
         .color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }
         .color-preposition { background: #FF8E53; border-bottom-color: #D35400; }
         .color-article { background: #F9A8D4; border-bottom-color: #C71585; }
@@ -54,7 +54,7 @@
         .answer-word-block.long-word::after { display: block; }
         .answer-word-block.color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
         .answer-word-block.color-verb { background: #2ED573; border-bottom-color: #1E8449; }
-        .answer-word-block.color-object { background: #FF4757; border-bottom-color: #C0392B; }
+        .answer-word-block.color-object { background: #1E90FF; border-bottom-color: #1565C0; }
         .answer-word-block.color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }
         .answer-word-block.color-preposition { background: #FF8E53; border-bottom-color: #D35400; }
         .answer-word-block.color-article { background: #F9A8D4; border-bottom-color: #C71585; }
@@ -151,52 +151,198 @@ const selectedClass = localStorage.getItem('megaScrambleClass') || '2pm';
 const csvFile = localStorage.getItem('megaScrambleCSV') || (selectedClass + '.csv');
 $('#classDisplay').html('Class: <span>' + (CLASS_LABELS[selectedClass] || selectedClass) + '</span>');
 
-// ----- AUTO-COLOR DICTIONARIES -----
-const KR_SUBJ = ['나는','저는','너는','그는','그녀는','우리는','내가','제가','네가','우리가','우리'];
-const KR_AUX  = ['거야','거니','거예요','거야?','거니?','것','거','래'];
+/* ============================================================
+   GRAMMAR-BASED AUTO-COLOR ENGINE  (vocabulary-independent)
+   Yellow = Subject | Green = Verb | Blue = Object | White = rest
+   Korean roles come from PARTICLES; English from closed-class
+   words + position. Both are fixed grammar, so new weekly
+   vocabulary keeps working without edits.
+   ============================================================ */
 
-const EN_SUBJ = new Set(['i',"i'm",'im','you','he','she','it','we','they']);
-const EN_VERB = new Set([
-    'go','going','goes','do','does','did','buy','help','play','read','write','wrote',
-    'make','made','wake','clean','rest','visit','study','watch','cook','swim','swimming',
-    'prepare','eat','drink','ride','meet','like','need','get','understand','finish','come',
-    'forgot','feel','feeling','take','learn','save','solve','answer','start','sleep',
-    'practice','use','become','give','speak','share','work','be','is','are','am','was','were',
-    'will','can','could','should','think','have','has','ride','not','trying','won','won\'t',
-    'don','doesn','can\'t','isn','ready','going'
-]);
-const EN_OBJ = new Set([
-    'homework','bike','mom','soccer','book','books','letter','cake','room','weekend',
-    'pizza','milk','chicken','blue','apple','apples','juice','dog','dogs','game','games',
-    'video','friend','friends','english','dinner','movie','umbrella','basketball','test',
-    'water','phone','mistakes','best','language','money','question','questions','ideas',
-    'team','person','presentation','grandparents','parents','something','bed','cat','cats',
-    'ball','pencil','doll','hat','sister','brother','music','ice','cream','picture','shower',
-    'window','family','swim','grade','outside','coffee','letter','picture','korean','bike','shopping'
-]);
+/* ---------- KOREAN ---------- */
+var KR_PRON = ['나는','저는','너는','당신은','그는','그녀는','우리는','너희는','내가','제가','네가','우리가'];
+var KR_TAIL = ['거야','거니','거예요','거야?','거니?','것','거','래','수','줄','좋겠어','같아'];
+var KR_WH   = /^(무엇|뭐|어디|누구|언제|왜|어떻게|몇|무슨)/;
 
-function stripP(w){ return (w || '').replace(/[.,!?;:'"’()]/g,'').trim(); }
+function krStrip(w){ return (w||'').replace(/[.,!?;:"'’()]/g,'').trim(); }
 
+function colorKorean(words){
+    var n = words.length;
+    var cls = new Array(n);
+    for (var i=0;i<n;i++) cls[i] = 'color-white';
+    if (!n) return cls;
+
+    /* 1) VERB = final word, skipping trailing auxiliaries */
+    var vi = n - 1;
+    while (vi > 0 && KR_TAIL.indexOf(words[vi]) !== -1) vi--;
+    cls[vi] = 'color-verb';
+
+    /* 2) OBJECT = 을/를 marked */
+    for (var j=0;j<vi;j++){
+        if (/[을를]$/.test(words[j])) cls[j] = 'color-object';
+    }
+
+    /* 3) SUBJECT
+          a) sentence-initial pronoun wins (나는/저는/너는 ...)
+          b) else last 은/는/이/가 word before the verb,
+             skipping interrogatives (무엇이/뭐가)                */
+    var si = -1;
+    if (KR_PRON.indexOf(words[0]) !== -1) {
+        si = 0;
+    } else {
+        for (var k=vi-1;k>=0;k--){
+            if (cls[k] !== 'color-white') continue;
+            if (KR_WH.test(words[k])) continue;
+            if (/[은는이가게]$/.test(words[k])) { si = k; break; }
+        }
+        /* fallback: allow interrogative to be subject */
+        if (si === -1){
+            for (var m=vi-1;m>=0;m--){
+                if (cls[m] === 'color-white' && /[은는이가]$/.test(words[m])) { si = m; break; }
+            }
+        }
+    }
+    if (si >= 0) cls[si] = 'color-subject';
+
+    /* 4) interrogative with a pronoun subject present -> object */
+    if (si >= 0 && KR_PRON.indexOf(words[si]) !== -1){
+        for (var p=0;p<vi;p++){
+            if (p !== si && cls[p] === 'color-white' && KR_WH.test(words[p])) {
+                cls[p] = 'color-object';
+                break;
+            }
+        }
+    }
+    return cls;
+}
+
+/* ---------- ENGLISH ---------- */
+var EN_PRON = ['i','you','he','she','we','they','it'];
+var EN_AUX  = ['is','are','am','was','were','be','been','being','do','does','did',
+               'have','has','had','can','could','will','would','shall','should',
+               'may','might','must',"don't","doesn't","didn't","can't","won't",
+               "isn't","aren't","wasn't","weren't","couldn't","shouldn't","wouldn't"];
+var EN_DET  = ['the','a','an','my','your','his','her','its','our','their','this',
+               'that','these','those','some','any','no','every','each','all','both','another'];
+var EN_PREP = ['at','on','in','for','with','to','from','of','about','by','into','onto',
+               'over','under','after','before','during','between','through','as','than','without','around'];
+var EN_CONJ = ['and','or','but','so','because','if','when','while','that'];
+var EN_ADV  = ['very','too','also','just','now','today','tomorrow','yesterday','here',
+               'there','exactly','often','always','never','usually','sometimes','again',
+               'well','together','outside','inside','early','late','soon','then','still',
+               'only','really','quite','more','most','less','much','ever','yet','already','back'];
+var EN_ADJ  = ['favorite','favourite','best','good','great','common','important','difficult',
+               'strange','big','new','next','last','same','other','many','little','small',
+               'young','old','easy','hard','right','wrong','free','busy','tired','sick',
+               'ready','happy','sad','healthy','confident','biggest','favorites'];
+var EN_WHC  = ["what's","who's","where's","when's","why's","how's","what’s","who’s","where’s"];
+var EN_WH   = ['what','who','whom','where','when','why','how','which'];
+var EN_ADJ_SUF = /(est|ful|ive|ous|able|ible|less|ish)$/;
+
+function enStrip(w){ return (w||'').replace(/[.,!?;:"()]/g,'').trim().toLowerCase(); }
+function inArr(a,w){ return a.indexOf(w) !== -1; }
+
+function colorEnglish(words){
+    var n = words.length;
+    var raw = [], cls = new Array(n);
+    for (var i=0;i<n;i++){ raw.push(enStrip(words[i])); cls[i] = 'color-white'; }
+    if (!n) return cls;
+
+    var hasPronSubj = false;
+    for (var a=0;a<n;a++){ if (inArr(EN_PRON, raw[a])) { hasPronSubj = true; break; } }
+
+    var startsWH = inArr(EN_WHC, raw[0]);           /* "What's ...?" */
+    var mainVerbAt = -1;
+    var inPP = false;          /* inside a prepositional phrase */
+    var pronAt = {};           /* which subjects are pronouns   */
+
+    for (var t=0;t<n;t++){
+        var w = raw[t];
+        if (!w) continue;
+
+        /* contraction  I'm / I've  -> subject (pronoun dominates) */
+        if (/^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(w)) { cls[t]='color-subject'; pronAt[t]=true; continue; }
+
+        /* "What's" = wh + copula -> verb (mirrors 무엇이니 / 뭐야) */
+        if (inArr(EN_WHC, w)) { cls[t]='color-verb'; if(mainVerbAt<0) mainVerbAt=t; continue; }
+
+        /* bare wh-word: object when a pronoun subject exists, else verb-ish */
+        if (inArr(EN_WH, w)) { cls[t] = hasPronSubj ? 'color-object' : 'color-white'; continue; }
+
+        if (inArr(EN_PRON, w)) { cls[t]='color-subject'; pronAt[t]=true; inPP=false; continue; }
+        if (inArr(EN_AUX,  w)) { cls[t]='color-verb'; inPP=false; if(mainVerbAt<0) mainVerbAt=t; continue; }
+        if (inArr(EN_PREP, w)) { inPP = true; continue; }
+        if (inArr(EN_DET,  w) || inArr(EN_CONJ,w)) { continue; }
+        /* possessive noun ("today's", "John's") acts as a determiner */
+        if (/['’]s$/.test(w) && !inArr(EN_WHC, w)) { continue; }
+        if (inArr(EN_ADV,  w) || inArr(EN_ADJ, w) || EN_ADJ_SUF.test(w)) { continue; }
+
+        /* ---- content word: verb or noun ---- */
+        var prev = t>0 ? raw[t-1] : '';
+        var prevCls = t>0 ? cls[t-1] : '';
+        var isVerb = false;
+
+        if (prev === 'to') isVerb = true;                               /* to + V (infinitive) */
+        else if (inArr(EN_AUX, prev)) isVerb = true;                    /* aux + V  */
+        else if (prevCls === 'color-subject' && pronAt[t-1]) isVerb = true; /* pronoun + V */
+        else if (/ing$/.test(w) && mainVerbAt >= 0 && !inPP
+                 && !inArr(EN_DET, prev) && !/['’]s$/.test(prev)) isVerb = true;
+
+        if (isVerb){
+            cls[t] = 'color-verb';
+            inPP = false;
+            if (mainVerbAt < 0 || inArr(EN_WHC, raw[0])) mainVerbAt = t;
+            continue;
+        }
+
+        /* noun */
+        /* coordinated noun ("date and day") inherits the previous noun's role */
+        if ((prev === 'and' || prev === 'or') && t >= 2){
+            var back = t - 2;
+            while (back >= 0 && cls[back] === 'color-white') back--;
+            if (back >= 0 && (cls[back] === 'color-subject' || cls[back] === 'color-object')){
+                cls[t] = cls[back];
+                continue;
+            }
+        }
+        if (inPP) { cls[t]='color-white'; continue; }                   /* inside prep. phrase */
+        if (startsWH && mainVerbAt >= 0){                               /* "What's the TITLE" */
+            cls[t] = 'color-subject';
+            startsWH = false;
+            continue;
+        }
+        if (mainVerbAt >= 0 && t > mainVerbAt) cls[t] = 'color-object';
+        else cls[t] = 'color-subject';
+    }
+
+    /* fallback: a "What's ...?" sentence must show a subject somewhere */
+    var haveSubj = false;
+    for (var z=0;z<n;z++) if (cls[z] === 'color-subject') haveSubj = true;
+    if (!haveSubj && inArr(EN_WHC, raw[0])){
+        for (var y=n-1;y>=1;y--){
+            if (cls[y] === 'color-white' && raw[y]
+                && !inArr(EN_DET,raw[y]) && !inArr(EN_PREP,raw[y])
+                && !inArr(EN_ADV,raw[y]) && !inArr(EN_ADJ,raw[y])
+                && !/['’]s$/.test(raw[y])){
+                cls[y] = 'color-subject';
+                break;
+            }
+        }
+    }
+    return cls;
+}
+
+/* ---------- BUILD MAP ---------- */
 function autoColorMap(korean, english){
-    const map = {};
-    const kw = korean.split(/\s+/).map(stripP).filter(Boolean);
-    let verbIdx = kw.length - 1;
-    while (verbIdx > 0 && KR_AUX.includes(kw[verbIdx])) verbIdx--;
-    kw.forEach((w, i) => {
-        let cls = 'color-white';
-        if (KR_SUBJ.includes(w)) cls = 'color-subject';
-        else if (i === verbIdx) cls = 'color-verb';
-        else if (/를$/.test(w) || /을$/.test(w)) cls = 'color-adjective';
-        map[w] = cls;
-    });
-    const ew = english.split(/\s+/).map(w => stripP(w).toLowerCase()).filter(Boolean);
-    ew.forEach(w => {
-        let cls = 'color-white';
-        if (EN_SUBJ.has(w)) cls = 'color-subject';
-        else if (EN_VERB.has(w)) cls = 'color-verb';
-        else if (EN_OBJ.has(w)) cls = 'color-adjective';
-        map[w] = cls;
-    });
+    var map = {};
+    var kw = korean.split(/\s+/).map(krStrip).filter(Boolean);
+    var kc = colorKorean(kw);
+    for (var i=0;i<kw.length;i++) map[kw[i]] = kc[i];
+
+    var ew = english.split(/\s+/).filter(function(x){return x.length;});
+    var ec = colorEnglish(ew);
+    for (var j=0;j<ew.length;j++) map[enStrip(ew[j])] = ec[j];
+
     return map;
 }
 
