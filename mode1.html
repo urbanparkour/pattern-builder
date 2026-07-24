@@ -38,23 +38,23 @@
         .word-block:hover { transform: translateY(-6px) scale(1.04); box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.3); }
         .word-block:active { transform: scale(0.95) translateY(2px); border-bottom-width: 3px; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.2); }
         @keyframes floatIn { 0% { opacity: 0; transform: scale(0.7) rotate(-8deg) translateY(20px); } 100% { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); } }
-        .color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
-        .color-verb { background: #2ED573; border-bottom-color: #1E8449; }
-        .color-object { background: #1E90FF; border-bottom-color: #1565C0; }
-        .color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }
-        .color-preposition { background: #FF8E53; border-bottom-color: #D35400; }
-        .color-article { background: #F9A8D4; border-bottom-color: #C71585; }
-        .color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }
-        .color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }
-        .color-other { background: #B0BEC5; border-bottom-color: #78909C; }
-        .color-white { background: #FFFFFF; border-bottom-color: #D0D0D0; color: #222; }
+        .color-subject { background: #FFD93D; border-bottom-color: #D4A017; }      /* Yellow - Subject */
+        .color-verb { background: #2ED573; border-bottom-color: #1E8449; }          /* Green - Verb */
+        .color-object { background: #FF4757; border-bottom-color: #C0392B; }        /* Red - Object */
+        .color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }        /* Purple - Adverb */
+        .color-preposition { background: #FF8E53; border-bottom-color: #D35400; }   /* Orange - Preposition */
+        .color-article { background: #F9A8D4; border-bottom-color: #C71585; }       /* Pink - Article */
+        .color-adjective { background: #1E90FF; border-bottom-color: #1565C0; }     /* Blue - Adjective */
+        .color-conjunction { background: #00D2D3; border-bottom-color: #00838F; }   /* Teal - Conjunction */
+        .color-other { background: #B0BEC5; border-bottom-color: #78909C; }         /* Grey - Other */
+        .color-white { background: #FFFFFF; border-bottom-color: #D0D0D0; color: #222; }  /* White - Unclassified */
         .answer-word-block { font-family: 'Noto Sans KR', 'Fredoka One', cursive, sans-serif; font-size: 22px; font-weight: 700; padding: 10px 18px; color: #1A1A1A; display: inline-block; letter-spacing: 0.5px; text-shadow: 1px 1px 0 rgba(255,255,255,0.3); position: relative; border-radius: 5px; border-bottom: 7px solid rgba(0,0,0,0.25); box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.2); min-width: 55px; text-align: center; }
         .answer-word-block::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 10px; background: inherit; border-radius: 50% 50% 0 0; box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 -2px 0 rgba(0,0,0,0.1); filter: brightness(1.15); }
         .answer-word-block::after { content: ''; position: absolute; top: -10px; left: 30%; transform: translateX(-50%); width: 20px; height: 10px; background: inherit; border-radius: 50% 50% 0 0; box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 -2px 0 rgba(0,0,0,0.1); filter: brightness(1.15); display: none; }
         .answer-word-block.long-word::after { display: block; }
         .answer-word-block.color-subject { background: #FFD93D; border-bottom-color: #D4A017; }
         .answer-word-block.color-verb { background: #2ED573; border-bottom-color: #1E8449; }
-        .answer-word-block.color-object { background: #1E90FF; border-bottom-color: #1565C0; }
+        .answer-word-block.color-object { background: #FF4757; border-bottom-color: #C0392B; }
         .answer-word-block.color-adverb { background: #A66CFF; border-bottom-color: #7B2FBE; }
         .answer-word-block.color-preposition { background: #FF8E53; border-bottom-color: #D35400; }
         .answer-word-block.color-article { background: #F9A8D4; border-bottom-color: #C71585; }
@@ -166,185 +166,237 @@ function shuffleArray(array) {
 }
 
 /* ============================================================
-   GRAMMAR-BASED AUTO-COLOR ENGINE
-   Yellow = Subject | Green = Verb | Blue = Object | White = rest
+   UNIFIED COLOR ENGINE — Korean AND English use the SAME colors!
+   Yellow = Subject | Green = Verb | Red = Object | White = other
    ============================================================ */
 
-/* ---------- KOREAN ---------- */
-var KR_PRON = ['나는','저는','너는','당신은','그는','그녀는','우리는','너희는','내가','제가','네가','우리가'];
-var KR_TAIL = ['거야','거니','거예요','거야?','거니?','것','거','래','수','줄','좋겠어','같아'];
-var KR_WH   = /^(무엇|뭐|어디|누구|언제|왜|어떻게|몇|무슨)/;
+// ----- KOREAN COLORING -----
+var KR_SUBJ = ['나는','저는','너는','당신은','그는','그녀는','우리는','너희는','내가','제가','네가','우리가','우리'];
+var KR_TAIL = ['거야','거니','거예요','거야?','거니?','것','거','래','수','줄','좋겠어','같아','까'];
+var KR_WH = /^(무엇|뭐|어디|누구|언제|왜|어떻게|몇|무슨)/;
 
-function krStrip(w){ return (w||'').replace(/[.,!?;:"'’()]/g,'').trim(); }
-
-function colorKorean(words){
-    var n = words.length;
-    var cls = new Array(n);
-    for (var i=0;i<n;i++) cls[i] = 'color-white';
-    if (!n) return cls;
-
-    var vi = n - 1;
-    while (vi > 0 && KR_TAIL.indexOf(words[vi]) !== -1) vi--;
-    cls[vi] = 'color-verb';
-
-    for (var j=0;j<vi;j++){
-        if (/[을를]$/.test(words[j])) cls[j] = 'color-object';
-    }
-
-    var si = -1;
-    if (KR_PRON.indexOf(words[0]) !== -1) {
-        si = 0;
-    } else {
-        for (var k=vi-1;k>=0;k--){
-            if (cls[k] !== 'color-white') continue;
-            if (KR_WH.test(words[k])) continue;
-            if (/[은는이가게]$/.test(words[k])) { si = k; break; }
-        }
-        if (si === -1){
-            for (var m=vi-1;m>=0;m--){
-                if (cls[m] === 'color-white' && /[은는이가]$/.test(words[m])) { si = m; break; }
-            }
-        }
-    }
-    if (si >= 0) cls[si] = 'color-subject';
-
-    if (si >= 0 && KR_PRON.indexOf(words[si]) !== -1){
-        for (var p=0;p<vi;p++){
-            if (p !== si && cls[p] === 'color-white' && KR_WH.test(words[p])) {
-                cls[p] = 'color-object';
-                break;
-            }
-        }
-    }
-    return cls;
+function colorKoreanWord(word, isVerb, isObject, isSubject) {
+    if (isSubject) return 'color-subject';
+    if (isVerb) return 'color-verb';
+    if (isObject) return 'color-object';
+    return 'color-white';
 }
 
-/* ---------- ENGLISH ---------- */
-var EN_PRON = ['i','you','he','she','we','they','it'];
-var EN_AUX  = ['is','are','am','was','were','be','been','being','do','does','did',
-               'have','has','had','can','could','will','would','shall','should',
-               'may','might','must',"don't","doesn't","didn't","can't","won't",
-               "isn't","aren't","wasn't","weren't","couldn't","shouldn't","wouldn't"];
-var EN_DET  = ['the','a','an','my','your','his','her','its','our','their','this',
-               'that','these','those','some','any','no','every','each','all','both','another'];
-var EN_PREP = ['at','on','in','for','with','to','from','of','about','by','into','onto',
-               'over','under','after','before','during','between','through','as','than','without','around'];
-var EN_CONJ = ['and','or','but','so','because','if','when','while','that'];
-var EN_ADV  = ['very','too','also','just','now','today','tomorrow','yesterday','here',
-               'there','exactly','often','always','never','usually','sometimes','again',
-               'well','together','outside','inside','early','late','soon','then','still',
-               'only','really','quite','more','most','less','much','ever','yet','already','back'];
-var EN_ADJ  = ['favorite','favourite','best','good','great','common','important','difficult',
-               'strange','big','new','next','last','same','other','many','little','small',
-               'young','old','easy','hard','right','wrong','free','busy','tired','sick',
-               'ready','happy','sad','healthy','confident','biggest','favorites'];
-var EN_WHC  = ["what's","who's","where's","when's","why's","how's","what’s","who’s","where’s"];
-var EN_WH   = ['what','who','whom','where','when','why','how','which'];
-var EN_ADJ_SUF = /(est|ful|ive|ous|able|ible|less|ish)$/;
-
-function enStrip(w){ return (w||'').replace(/[.,!?;:"()]/g,'').trim().toLowerCase(); }
-function inArr(a,w){ return a.indexOf(w) !== -1; }
-
-function colorEnglish(words){
-    var n = words.length;
-    var raw = [], cls = new Array(n);
-    for (var i=0;i<n;i++){ raw.push(enStrip(words[i])); cls[i] = 'color-white'; }
-    if (!n) return cls;
-
-    var hasPronSubj = false;
-    for (var a=0;a<n;a++){ if (inArr(EN_PRON, raw[a])) { hasPronSubj = true; break; } }
-
-    var startsWH = inArr(EN_WHC, raw[0]);
-    var mainVerbAt = -1;
-    var inPP = false;
-    var pronAt = {};
-
-    for (var t=0;t<n;t++){
-        var w = raw[t];
-        if (!w) continue;
-
-        if (/^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(w)) { cls[t]='color-subject'; pronAt[t]=true; continue; }
-        if (inArr(EN_WHC, w)) { cls[t]='color-verb'; if(mainVerbAt<0) mainVerbAt=t; continue; }
-        if (inArr(EN_WH, w)) { cls[t] = hasPronSubj ? 'color-object' : 'color-white'; continue; }
-        if (inArr(EN_PRON, w)) { cls[t]='color-subject'; pronAt[t]=true; inPP=false; continue; }
-        if (inArr(EN_AUX,  w)) { cls[t]='color-verb'; inPP=false; if(mainVerbAt<0) mainVerbAt=t; continue; }
-        if (inArr(EN_PREP, w)) { inPP = true; continue; }
-        if (inArr(EN_DET,  w) || inArr(EN_CONJ,w)) { continue; }
-        if (/['’]s$/.test(w) && !inArr(EN_WHC, w)) { continue; }
-        if (inArr(EN_ADV,  w) || inArr(EN_ADJ, w) || EN_ADJ_SUF.test(w)) { continue; }
-
-        var prev = t>0 ? raw[t-1] : '';
-        var prevCls = t>0 ? cls[t-1] : '';
-        var isVerb = false;
-
-        if (prev === 'to') isVerb = true;
-        else if (inArr(EN_AUX, prev)) isVerb = true;
-        else if (prevCls === 'color-subject' && pronAt[t-1]) isVerb = true;
-        else if (/ing$/.test(w) && mainVerbAt >= 0 && !inPP
-                 && !inArr(EN_DET, prev) && !/['’]s$/.test(prev)) isVerb = true;
-
-        if (isVerb){
-            cls[t] = 'color-verb';
-            inPP = false;
-            if (mainVerbAt < 0 || inArr(EN_WHC, raw[0])) mainVerbAt = t;
-            continue;
-        }
-
-        if ((prev === 'and' || prev === 'or') && t >= 2){
-            var back = t - 2;
-            while (back >= 0 && cls[back] === 'color-white') back--;
-            if (back >= 0 && (cls[back] === 'color-subject' || cls[back] === 'color-object')){
-                cls[t] = cls[back];
-                continue;
-            }
-        }
-        if (inPP) { cls[t]='color-white'; continue; }
-        if (startsWH && mainVerbAt >= 0){
-            cls[t] = 'color-subject';
-            startsWH = false;
-            continue;
-        }
-        if (mainVerbAt >= 0 && t > mainVerbAt) cls[t] = 'color-object';
-        else cls[t] = 'color-subject';
-    }
-
-    var haveSubj = false;
-    for (var z=0;z<n;z++) if (cls[z] === 'color-subject') haveSubj = true;
-    if (!haveSubj && inArr(EN_WHC, raw[0])){
-        for (var y=n-1;y>=1;y--){
-            if (cls[y] === 'color-white' && raw[y]
-                && !inArr(EN_DET,raw[y]) && !inArr(EN_PREP,raw[y])
-                && !inArr(EN_ADV,raw[y]) && !inArr(EN_ADJ,raw[y])
-                && !/['’]s$/.test(raw[y])){
-                cls[y] = 'color-subject';
-                break;
+function getKoreanRole(word, index, words) {
+    const w = word.replace(/[.,!?;:"'’()]/g, '').trim();
+    if (!w) return 'white';
+    
+    // Check if it's a subject (pronoun or particle)
+    if (KR_SUBJ.includes(w)) return 'subject';
+    if (/[은는이가]$/.test(w) && !KR_WH.test(w)) return 'subject';
+    
+    // Check if it's a verb (final word or after skipping auxiliaries)
+    let vi = words.length - 1;
+    while (vi > 0 && KR_TAIL.includes(words[vi].replace(/[.,!?;:"'’()]/g, '').trim())) vi--;
+    if (index === vi) return 'verb';
+    
+    // Check if it's an object (을/를 particle)
+    if (/[을를]$/.test(w)) return 'object';
+    
+    // Interrogative with subject already present = object
+    if (KR_WH.test(w) && index > 0) {
+        for (let i = 0; i < index; i++) {
+            if (KR_SUBJ.includes(words[i].replace(/[.,!?;:"'’()]/g, '').trim())) {
+                return 'object';
             }
         }
     }
-    return cls;
+    
+    return 'white';
 }
 
-/* ---------- BUILD MAP ---------- */
-function autoColorMap(korean, english){
+// ----- ENGLISH COLORING -----
+var EN_SUBJ = ['i', 'you', 'he', 'she', 'we', 'they', 'it'];
+var EN_AUX = ['is', 'are', 'am', 'was', 'were', 'be', 'been', 'being', 'do', 'does', 'did',
+              'have', 'has', 'had', 'can', 'could', 'will', 'would', 'shall', 'should',
+              'may', 'might', 'must', "don't", "doesn't", "didn't", "can't", "won't",
+              "isn't", "aren't", "wasn't", "weren't", "couldn't", "shouldn't", "wouldn't"];
+var EN_PREP = ['at', 'on', 'in', 'for', 'with', 'to', 'from', 'of', 'about', 'by', 'into', 'onto',
+               'over', 'under', 'after', 'before', 'during', 'between', 'through', 'as', 'than', 'without', 'around'];
+var EN_DET = ['the', 'a', 'an', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'this',
+              'that', 'these', 'those', 'some', 'any', 'no', 'every', 'each', 'all', 'both', 'another'];
+var EN_WH = ['what', 'who', 'whom', 'where', 'when', 'why', 'how', 'which'];
+
+function getEnglishRole(word, index, words) {
+    const w = word.toLowerCase().replace(/[.,!?;:"()]/g, '').trim();
+    if (!w) return 'white';
+    
+    // Pronouns = subject
+    if (EN_SUBJ.includes(w)) return 'subject';
+    if (/^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(w)) return 'subject';
+    
+    // Auxiliary verbs = verb
+    if (EN_AUX.includes(w)) return 'verb';
+    
+    // "What's" = verb
+    if (/^(what|who|where|when|why|how)['’]s$/.test(w)) return 'verb';
+    
+    // Check if it's a verb
+    let prev = index > 0 ? words[index - 1].toLowerCase().replace(/[.,!?;:"()]/g, '').trim() : '';
+    if (prev === 'to') return 'verb';
+    if (EN_AUX.includes(prev)) return 'verb';
+    
+    // -ing words after subject are verbs
+    if (/ing$/.test(w) && index > 0) {
+        let prevRole = getEnglishRole(words[index - 1], index - 1, words);
+        if (prevRole === 'subject') return 'verb';
+    }
+    
+    // Prepositions = other
+    if (EN_PREP.includes(w)) return 'white';
+    
+    // Determiners = other
+    if (EN_DET.includes(w)) return 'white';
+    
+    // WH words = object if subject exists, otherwise subject
+    if (EN_WH.includes(w)) {
+        for (let i = 0; i < index; i++) {
+            if (getEnglishRole(words[i], i, words) === 'subject') {
+                return 'object';
+            }
+        }
+        return 'subject';
+    }
+    
+    // If there's a verb already, nouns after it are objects
+    let hasVerb = false;
+    for (let i = 0; i < index; i++) {
+        if (getEnglishRole(words[i], i, words) === 'verb') hasVerb = true;
+    }
+    if (hasVerb) return 'object';
+    
+    // Otherwise it's a subject
+    return 'subject';
+}
+
+// ===== UNIFIED COLOR MAP FUNCTION =====
+function autoColorMap(korean, english) {
     var map = {};
-    var kw = korean.split(/\s+/).map(krStrip).filter(Boolean);
-    var kc = colorKorean(kw);
-    for (var i=0;i<kw.length;i++) map[kw[i]] = kc[i];
-
-    var ew = english.split(/\s+/).filter(function(x){return x.length;});
-    var ec = colorEnglish(ew);
-    for (var j=0;j<ew.length;j++) map[enStrip(ew[j])] = ec[j];
-
+    
+    // Color Korean words
+    var kw = korean.split(/\s+/).filter(function(w) { return w.length > 0; });
+    var kwClean = kw.map(function(w) { return w.replace(/[.,!?;:"'’()]/g, '').trim(); });
+    
+    // Find verb index (skip auxiliaries)
+    var vi = kwClean.length - 1;
+    while (vi > 0 && KR_TAIL.includes(kwClean[vi])) vi--;
+    
+    kw.forEach(function(word, idx) {
+        var clean = word.replace(/[.,!?;:"'’()]/g, '').trim();
+        var role = 'white';
+        
+        // Subject check
+        if (KR_SUBJ.includes(clean)) {
+            role = 'subject';
+        } else if (/[은는이가]$/.test(clean) && !KR_WH.test(clean)) {
+            role = 'subject';
+        } else if (idx === vi) {
+            role = 'verb';
+        } else if (/[을를]$/.test(clean)) {
+            role = 'object';
+        } else if (KR_WH.test(clean) && idx > 0) {
+            // WH word after a subject = object
+            for (var i = 0; i < idx; i++) {
+                if (KR_SUBJ.includes(kwClean[i]) || /[은는이가]$/.test(kwClean[i])) {
+                    role = 'object';
+                    break;
+                }
+            }
+        }
+        
+        if (role === 'subject') map[clean] = 'color-subject';
+        else if (role === 'verb') map[clean] = 'color-verb';
+        else if (role === 'object') map[clean] = 'color-object';
+        else map[clean] = 'color-white';
+    });
+    
+    // Color English words
+    var ew = english.split(/\s+/).filter(function(w) { return w.length > 0; });
+    ew.forEach(function(word, idx) {
+        var clean = word.toLowerCase().replace(/[.,!?;:"()]/g, '').trim();
+        if (!clean) return;
+        
+        var role = 'white';
+        
+        // Pronouns = subject
+        if (EN_SUBJ.includes(clean)) {
+            role = 'subject';
+        } else if (/^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(clean)) {
+            role = 'subject';
+        } else if (EN_AUX.includes(clean)) {
+            role = 'verb';
+        } else if (/^(what|who|where|when|why|how)['’]s$/.test(clean)) {
+            role = 'verb';
+        } else {
+            // Check if it's a verb
+            var prev = idx > 0 ? ew[idx - 1].toLowerCase().replace(/[.,!?;:"()]/g, '').trim() : '';
+            if (prev === 'to') {
+                role = 'verb';
+            } else if (EN_AUX.includes(prev)) {
+                role = 'verb';
+            } else if (/ing$/.test(clean) && idx > 0) {
+                // Check if previous word is a subject
+                var prevClean = ew[idx - 1].toLowerCase().replace(/[.,!?;:"()]/g, '').trim();
+                if (EN_SUBJ.includes(prevClean) || /^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(prevClean)) {
+                    role = 'verb';
+                }
+            } else if (EN_PREP.includes(clean) || EN_DET.includes(clean)) {
+                role = 'white';
+            } else if (EN_WH.includes(clean)) {
+                // WH word: object if subject exists before it
+                var hasSubject = false;
+                for (var i = 0; i < idx; i++) {
+                    var prevClean2 = ew[i].toLowerCase().replace(/[.,!?;:"()]/g, '').trim();
+                    if (EN_SUBJ.includes(prevClean2) || /^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(prevClean2)) {
+                        hasSubject = true;
+                        break;
+                    }
+                }
+                role = hasSubject ? 'object' : 'subject';
+            } else {
+                // Check if there's a verb before this word
+                var hasVerb = false;
+                for (var j = 0; j < idx; j++) {
+                    var prevClean3 = ew[j].toLowerCase().replace(/[.,!?;:"()]/g, '').trim();
+                    if (EN_AUX.includes(prevClean3) || prevClean3 === 'to' || /^(what|who|where|when|why|how)['’]s$/.test(prevClean3)) {
+                        hasVerb = true;
+                        break;
+                    }
+                    if (EN_SUBJ.includes(prevClean3) && j < idx - 1) {
+                        // If subject followed by a content word, it might be a verb
+                        var nextClean = ew[j+1].toLowerCase().replace(/[.,!?;:"()]/g, '').trim();
+                        if (!EN_AUX.includes(nextClean) && !EN_PREP.includes(nextClean) && !EN_DET.includes(nextClean)) {
+                            hasVerb = true;
+                            break;
+                        }
+                    }
+                }
+                role = hasVerb ? 'object' : 'subject';
+            }
+        }
+        
+        if (role === 'subject') map[clean] = 'color-subject';
+        else if (role === 'verb') map[clean] = 'color-verb';
+        else if (role === 'object') map[clean] = 'color-object';
+        else map[clean] = 'color-white';
+    });
+    
     return map;
 }
 
+// ===== RENDER FUNCTIONS =====
 function renderWordCloud(sentence, colorMap) {
     const words = sentence.split(/\s+/).filter(w => w.length > 0);
     const container = $('#wordCloud');
     container.empty();
     shuffleArray([...words]).forEach((word, index) => {
         const key = stripP(word);
-        const colorClass = (colorMap && (colorMap[key] || colorMap[key.toLowerCase()])) || 'color-white';
+        const colorClass = (colorMap && colorMap[key]) || 'color-white';
         const block = $('<span class="word-block"></span>')
             .addClass(colorClass)
             .text(word)
@@ -370,7 +422,7 @@ function renderAnswer(sentence, colorMap) {
     });
 }
 
-// ----- GAME STATE -----
+// ===== GAME STATE =====
 let questions = [];
 let currentIndex = 0;
 let timerInterval;
@@ -453,7 +505,7 @@ $('#modalOkBtn').on('click', function() {
     endGame();
 });
 
-// ----- LOAD CSV -----
+// ===== LOAD CSV =====
 $(document).ready(function () {
     Papa.parse(csvFile, {
         download: true,
