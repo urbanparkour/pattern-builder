@@ -151,12 +151,23 @@ const selectedClass = localStorage.getItem('megaScrambleClass') || '2pm';
 const csvFile = localStorage.getItem('megaScrambleCSV') || (selectedClass + '.csv');
 $('#classDisplay').html('Class: <span>' + (CLASS_LABELS[selectedClass] || selectedClass) + '</span>');
 
+// ===== STRIP PUNCTUATION FUNCTION =====
+function stripP(w) {
+    return (w || '').replace(/[.,!?;:'"’()]/g, '').trim();
+}
+
+// ===== SHUFFLE FUNCTION =====
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 /* ============================================================
-   GRAMMAR-BASED AUTO-COLOR ENGINE  (vocabulary-independent)
+   GRAMMAR-BASED AUTO-COLOR ENGINE
    Yellow = Subject | Green = Verb | Blue = Object | White = rest
-   Korean roles come from PARTICLES; English from closed-class
-   words + position. Both are fixed grammar, so new weekly
-   vocabulary keeps working without edits.
    ============================================================ */
 
 /* ---------- KOREAN ---------- */
@@ -172,20 +183,14 @@ function colorKorean(words){
     for (var i=0;i<n;i++) cls[i] = 'color-white';
     if (!n) return cls;
 
-    /* 1) VERB = final word, skipping trailing auxiliaries */
     var vi = n - 1;
     while (vi > 0 && KR_TAIL.indexOf(words[vi]) !== -1) vi--;
     cls[vi] = 'color-verb';
 
-    /* 2) OBJECT = 을/를 marked */
     for (var j=0;j<vi;j++){
         if (/[을를]$/.test(words[j])) cls[j] = 'color-object';
     }
 
-    /* 3) SUBJECT
-          a) sentence-initial pronoun wins (나는/저는/너는 ...)
-          b) else last 은/는/이/가 word before the verb,
-             skipping interrogatives (무엇이/뭐가)                */
     var si = -1;
     if (KR_PRON.indexOf(words[0]) !== -1) {
         si = 0;
@@ -195,7 +200,6 @@ function colorKorean(words){
             if (KR_WH.test(words[k])) continue;
             if (/[은는이가게]$/.test(words[k])) { si = k; break; }
         }
-        /* fallback: allow interrogative to be subject */
         if (si === -1){
             for (var m=vi-1;m>=0;m--){
                 if (cls[m] === 'color-white' && /[은는이가]$/.test(words[m])) { si = m; break; }
@@ -204,7 +208,6 @@ function colorKorean(words){
     }
     if (si >= 0) cls[si] = 'color-subject';
 
-    /* 4) interrogative with a pronoun subject present -> object */
     if (si >= 0 && KR_PRON.indexOf(words[si]) !== -1){
         for (var p=0;p<vi;p++){
             if (p !== si && cls[p] === 'color-white' && KR_WH.test(words[p])) {
@@ -251,40 +254,32 @@ function colorEnglish(words){
     var hasPronSubj = false;
     for (var a=0;a<n;a++){ if (inArr(EN_PRON, raw[a])) { hasPronSubj = true; break; } }
 
-    var startsWH = inArr(EN_WHC, raw[0]);           /* "What's ...?" */
+    var startsWH = inArr(EN_WHC, raw[0]);
     var mainVerbAt = -1;
-    var inPP = false;          /* inside a prepositional phrase */
-    var pronAt = {};           /* which subjects are pronouns   */
+    var inPP = false;
+    var pronAt = {};
 
     for (var t=0;t<n;t++){
         var w = raw[t];
         if (!w) continue;
 
-        /* contraction  I'm / I've  -> subject (pronoun dominates) */
         if (/^(i|you|he|she|we|they|it)['’](m|s|re|ve|ll|d)$/.test(w)) { cls[t]='color-subject'; pronAt[t]=true; continue; }
-
-        /* "What's" = wh + copula -> verb (mirrors 무엇이니 / 뭐야) */
         if (inArr(EN_WHC, w)) { cls[t]='color-verb'; if(mainVerbAt<0) mainVerbAt=t; continue; }
-
-        /* bare wh-word: object when a pronoun subject exists, else verb-ish */
         if (inArr(EN_WH, w)) { cls[t] = hasPronSubj ? 'color-object' : 'color-white'; continue; }
-
         if (inArr(EN_PRON, w)) { cls[t]='color-subject'; pronAt[t]=true; inPP=false; continue; }
         if (inArr(EN_AUX,  w)) { cls[t]='color-verb'; inPP=false; if(mainVerbAt<0) mainVerbAt=t; continue; }
         if (inArr(EN_PREP, w)) { inPP = true; continue; }
         if (inArr(EN_DET,  w) || inArr(EN_CONJ,w)) { continue; }
-        /* possessive noun ("today's", "John's") acts as a determiner */
         if (/['’]s$/.test(w) && !inArr(EN_WHC, w)) { continue; }
         if (inArr(EN_ADV,  w) || inArr(EN_ADJ, w) || EN_ADJ_SUF.test(w)) { continue; }
 
-        /* ---- content word: verb or noun ---- */
         var prev = t>0 ? raw[t-1] : '';
         var prevCls = t>0 ? cls[t-1] : '';
         var isVerb = false;
 
-        if (prev === 'to') isVerb = true;                               /* to + V (infinitive) */
-        else if (inArr(EN_AUX, prev)) isVerb = true;                    /* aux + V  */
-        else if (prevCls === 'color-subject' && pronAt[t-1]) isVerb = true; /* pronoun + V */
+        if (prev === 'to') isVerb = true;
+        else if (inArr(EN_AUX, prev)) isVerb = true;
+        else if (prevCls === 'color-subject' && pronAt[t-1]) isVerb = true;
         else if (/ing$/.test(w) && mainVerbAt >= 0 && !inPP
                  && !inArr(EN_DET, prev) && !/['’]s$/.test(prev)) isVerb = true;
 
@@ -295,8 +290,6 @@ function colorEnglish(words){
             continue;
         }
 
-        /* noun */
-        /* coordinated noun ("date and day") inherits the previous noun's role */
         if ((prev === 'and' || prev === 'or') && t >= 2){
             var back = t - 2;
             while (back >= 0 && cls[back] === 'color-white') back--;
@@ -305,8 +298,8 @@ function colorEnglish(words){
                 continue;
             }
         }
-        if (inPP) { cls[t]='color-white'; continue; }                   /* inside prep. phrase */
-        if (startsWH && mainVerbAt >= 0){                               /* "What's the TITLE" */
+        if (inPP) { cls[t]='color-white'; continue; }
+        if (startsWH && mainVerbAt >= 0){
             cls[t] = 'color-subject';
             startsWH = false;
             continue;
@@ -315,7 +308,6 @@ function colorEnglish(words){
         else cls[t] = 'color-subject';
     }
 
-    /* fallback: a "What's ...?" sentence must show a subject somewhere */
     var haveSubj = false;
     for (var z=0;z<n;z++) if (cls[z] === 'color-subject') haveSubj = true;
     if (!haveSubj && inArr(EN_WHC, raw[0])){
@@ -344,14 +336,6 @@ function autoColorMap(korean, english){
     for (var j=0;j<ew.length;j++) map[enStrip(ew[j])] = ec[j];
 
     return map;
-}
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
 }
 
 function renderWordCloud(sentence, colorMap) {
